@@ -4,287 +4,337 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NBA Wins</title>
+<meta name="theme-color" content="#14161C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --court: #0E1B2E;
-    --panel: #15253C;
-    --line: #22344F;
-    --text: #EEF2F7;
-    --muted: #8193AD;
+    --bg: #14161C;
+    --raise: #1E2129;
+    --line: #2C303B;
+    --text: #F4F5F7;
+    --muted: #8B91A0;
+    --ink: #14161C;
     --Pablo: #FF5B4F;
     --Pete: #FFB12B;
     --Micky: #3AA8FF;
     --Ryall: #4FD68A;
-    --Unpicked: #6F819C;
-    --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
-    --body: "Barlow", system-ui, sans-serif;
+    --Unpicked: #8B91A0;
+    --face: "Bricolage Grotesque", system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--court);
-    color: var(--text);
-    font: 400 15px/1.45 var(--body);
-    -webkit-font-smoothing: antialiased;
-  }
-  main { max-width: 560px; margin: 0 auto; padding: 20px 16px 48px; }
-  a { color: inherit; }
-  :focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 400 15px/1.45 var(--face); }
+  :focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 16px; }
+  .tab { font-variant-numeric: tabular-nums; }
 
-  header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  h1 {
-    margin: 0;
-    font: 800 34px/1 var(--cond);
-    letter-spacing: 0.01em;
-  }
-  h1 span { color: var(--muted); font-weight: 600; }
-  .updated { color: var(--muted); font-size: 13px; text-align: right; }
+  header.wrap { display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; }
+  .brand { margin: 0; font: 800 18px/1 var(--face); font-stretch: 75%; }
+  .brand span { color: var(--muted); }
+  .updated { color: var(--muted); font-size: 13px; }
 
-  h2 {
-    margin: 36px 0 12px;
-    font: 700 22px/1.1 var(--cond);
-    letter-spacing: 0.01em;
-  }
-  h2 small { font: 500 15px var(--body); color: var(--muted); margin-left: 6px; }
+  /* Daily headline */
+  h1 { margin: 18px 0 6px; font: 800 34px/1.02 var(--face); font-stretch: 78%; letter-spacing: -0.01em; text-wrap: balance; }
+  .dek { margin: 0; color: var(--muted); font-size: 15px; text-wrap: pretty; }
 
-  /* Race chart */
-  .race { margin: 18px -4px 0; }
+  /* Leaderboard strip */
+  .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 18px; }
+  .strip button {
+    all: unset; cursor: pointer; text-align: left; min-width: 0;
+    background: var(--raise); border-radius: 10px; padding: 8px 10px;
+    border-bottom: 3px solid var(--c);
+  }
+  .strip button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  .strip button[aria-current="true"] { background: var(--c); color: var(--ink); }
+  .strip .n { display: block; font: 800 26px/1 var(--face); font-stretch: 75%; }
+  .strip .who { font-size: 13px; font-weight: 600; }
+
+  /* Cards */
+  .deck {
+    display: grid; grid-auto-flow: column; grid-auto-columns: 86%;
+    gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 14px 16px 8px; scrollbar-width: none; overscroll-behavior-x: contain;
+  }
+  .deck::-webkit-scrollbar { display: none; }
+  @media (min-width: 600px) { .deck { grid-auto-columns: 520px; padding-left: calc((100vw - 528px) / 2); padding-right: calc((100vw - 528px) / 2); } }
+  .card { scroll-snap-align: center; background: var(--c); color: var(--ink); border-radius: 22px; padding: 18px 18px 14px; }
+  .card .place { font-size: 14px; font-weight: 600; }
+  .card h2 { margin: 2px 0 0; font: 800 54px/0.92 var(--face); font-stretch: 75%; letter-spacing: -0.01em; }
+  .card .score { display: flex; align-items: flex-end; gap: 14px; margin-top: 8px; }
+  .card .wins { font: 800 112px/0.8 var(--face); font-stretch: 75%; letter-spacing: -0.03em; }
+  .card .side { padding-bottom: 4px; font-size: 14px; line-height: 1.35; }
+  .card .side b { display: block; font: 700 22px/1 var(--face); font-stretch: 85%; margin-bottom: 2px; }
+  .spark { margin: 12px 0 2px; height: 44px; }
+  .spark svg { width: 100%; height: 100%; display: block; }
+  .proj { display: flex; justify-content: space-between; align-items: baseline; margin: 8px 0 0; padding: 8px 0; border-top: 1.5px solid rgba(20, 22, 28, 0.25); font-size: 14px; font-weight: 600; }
+  .proj b { font: 800 26px/1 var(--face); font-stretch: 78%; }
+  .picks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0 12px; }
+  .picks div { background: rgba(20, 22, 28, 0.12); border-radius: 12px; padding: 8px 10px; }
+  .picks small { display: block; font-size: 12px; font-weight: 600; opacity: 0.75; }
+  .picks b { display: block; font: 700 18px/1.15 var(--face); font-stretch: 85%; }
+  .picks span { font-size: 13px; }
+  .teams { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid rgba(20, 22, 28, 0.25); }
+  .teams li { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(20, 22, 28, 0.14); }
+  .teams .pick { font-size: 12px; font-weight: 600; opacity: 0.6; }
+  .teams .t { font-weight: 600; }
+  .teams .wl { font: 700 16px var(--face); }
+  .dots { display: flex; justify-content: center; gap: 6px; margin-top: 6px; }
+  .dots i { width: 6px; height: 6px; border-radius: 3px; background: var(--line); transition: width 0.2s, background 0.2s; }
+  .dots i.on { width: 18px; background: var(--text); }
+
+  /* Sections below the deck */
+  h3 { margin: 34px 0 12px; font: 800 24px/1 var(--face); font-stretch: 75%; }
+  h3 small { font: 400 14px var(--face); color: var(--muted); margin-left: 6px; }
+
+  .games { display: grid; gap: 8px; }
+  .game { background: var(--raise); border-radius: 14px; padding: 4px 12px; }
+  .row { display: grid; grid-template-columns: 1fr auto 44px; align-items: center; column-gap: 10px; padding: 6px 0; }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row .t { font-weight: 600; }
+  .row .t small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .row .o { font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--c); color: var(--ink); }
+  .row .o.none { background: var(--line); color: var(--muted); }
+  .row .p { text-align: right; font: 700 18px var(--face); }
+  .row.lost .t, .row.lost .p { color: var(--muted); }
+  .status { color: var(--muted); font-size: 12px; margin: 0 0 6px; }
+
+  .race { background: var(--raise); border-radius: 16px; padding: 12px 8px 6px; }
   .race svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .race .grid { stroke: var(--line); stroke-width: 1; }
-  .race .tick { fill: var(--muted); font: 500 11px var(--body); }
+  .race .grid { stroke: var(--line); }
+  .race .tick { fill: var(--muted); font: 500 11px var(--face); }
   .race .path { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
-  .race .dot { stroke: var(--court); stroke-width: 2; }
-  .race .end-num { font: 800 26px var(--cond); }
-  .race .end-name { font: 600 13px var(--cond); }
-  .race .draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: draw 1.1s ease-out forwards; }
-  @keyframes draw { to { stroke-dashoffset: 0; } }
-  @media (prefers-reduced-motion: reduce) { .race .draw { animation: none; stroke-dashoffset: 0; } }
+  .race .dot { stroke: var(--raise); stroke-width: 2; }
+  .race .end { font: 800 22px var(--face); font-stretch: 78%; }
+  .race .end-name { font: 600 12px var(--face); }
 
-  /* Standings */
-  .standings { list-style: none; margin: 8px 0 0; padding: 0; }
-  .standings li {
-    display: grid;
-    grid-template-columns: 64px 1fr auto;
-    align-items: center;
-    column-gap: 12px;
-    padding: 10px 0;
-    border-top: 1px solid var(--line);
-  }
-  .standings li:last-child { border-bottom: 1px solid var(--line); }
-  .standings .big { font: 800 48px/0.9 var(--cond); font-variant-numeric: tabular-nums; }
-  .standings .who { font: 700 24px/1 var(--cond); }
-  .standings .bar { height: 4px; border-radius: 2px; margin-top: 8px; background: currentColor; opacity: 0.9; }
-  .standings .rec { text-align: right; font: 600 18px/1.1 var(--cond); }
-  .standings .back { display: block; color: var(--muted); font: 400 13px var(--body); }
+  .report { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .report div { background: var(--raise); border-radius: 14px; padding: 12px 14px; border-left: 4px solid var(--c); }
+  .report small { display: block; color: var(--muted); font-size: 12px; font-weight: 600; }
+  .report b { display: block; font: 700 20px/1.15 var(--face); font-stretch: 82%; margin: 2px 0; }
+  .report span { font-size: 14px; }
 
-  /* Last night */
-  .haul { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .haul div { background: var(--panel); border-top: 3px solid currentColor; padding: 8px 10px 10px; }
-  .haul b { display: block; font: 800 30px/1 var(--cond); }
-  .haul span { color: var(--text); font: 600 15px var(--cond); }
-  .haul .rec { color: var(--muted); font: 400 12px var(--body); }
+  .nobody { background: var(--raise); border-radius: 14px; padding: 14px; }
+  .nobody p { margin: 0; }
+  .nobody .big { font: 800 24px/1.1 var(--face); font-stretch: 78%; margin-bottom: 4px; }
+  .nobody ul { list-style: none; margin: 10px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .nobody li { display: flex; justify-content: space-between; padding: 6px 0 0; }
 
-  .games { margin-top: 14px; display: grid; gap: 8px; }
-  .game { background: var(--panel); padding: 4px 12px; }
-  .side {
-    display: grid;
-    grid-template-columns: 4px 1fr auto 52px;
-    align-items: center;
-    column-gap: 10px;
-    padding: 6px 0;
-  }
-  .side + .side { border-top: 1px solid var(--line); }
-  .stripe { align-self: stretch; border-radius: 2px; }
-  .side .team { font: 600 19px var(--cond); }
-  .side .team small { font: 400 12px var(--body); color: var(--muted); margin-left: 4px; }
-  .side .owner { font: 600 15px var(--cond); text-align: right; }
-  .side .score { font: 800 24px var(--cond); text-align: right; font-variant-numeric: tabular-nums; }
-  .side.lost .team, .side.lost .score { color: var(--muted); }
+  .fine { color: var(--muted); font-size: 13px; margin: 28px 0 0; }
+  footer { padding-bottom: 44px; }
   .empty { color: var(--muted); }
 
-  /* Rosters */
-  details { border-top: 1px solid var(--line); }
-  details:last-of-type { border-bottom: 1px solid var(--line); }
-  summary {
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    font: 700 22px var(--cond);
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary .rec { color: var(--text); font-weight: 600; }
-  summary .rec::after { content: "+"; display: inline-block; width: 18px; margin-left: 10px; color: var(--muted); text-align: center; }
-  details[open] summary .rec::after { content: "−"; }
-  .roster { list-style: none; margin: 0 0 12px; padding: 0; }
-  .roster li { display: grid; grid-template-columns: 4px 1fr auto; column-gap: 10px; align-items: center; padding: 5px 0; }
-  .roster .team { font: 500 18px var(--cond); }
-  .roster .wl { font: 600 18px var(--cond); font-variant-numeric: tabular-nums; }
-  .note { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
-
   @media (max-width: 380px) {
-    .haul { grid-template-columns: repeat(2, 1fr); }
-    .standings .big { font-size: 42px; }
+    .card .wins { font-size: 96px; }
+    .report { grid-template-columns: 1fr; }
+    h1 { font-size: 30px; }
   }
+  @media (prefers-reduced-motion: reduce) { .dots i { transition: none; } .deck { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
-<main>
-  <header>
-    <h1>NBA Wins <span id="season"></span></h1>
-    <div class="updated" id="updated">Loading</div>
-  </header>
-
-  <section class="race" id="race" aria-label="Cumulative wins by player over the season"></section>
-
-  <ol class="standings" id="standings" aria-label="Standings"></ol>
-
-  <section id="last-night"></section>
-
-  <section id="rosters"></section>
-</main>
+<header class="wrap">
+  <p class="brand">NBA Wins <span id="season"></span></p>
+  <span class="updated" id="updated">Loading</span>
+</header>
+<div class="wrap">
+  <h1 id="headline"></h1>
+  <p class="dek" id="dek"></p>
+  <nav class="strip" id="strip" aria-label="Standings"></nav>
+</div>
+<div class="deck" id="deck"></div>
+<div class="dots" id="dots" aria-hidden="true"></div>
+<footer class="wrap">
+  <section id="night"></section>
+  <section id="race-wrap"></section>
+  <section id="report-wrap"></section>
+  <section id="nobody-wrap"></section>
+  <p class="fine">Projections blend each team's record with a .500 start, so early hot streaks don't run away with it. They firm up as the season goes on. Best and worst picks compare each team's record with where it was drafted.</p>
+</footer>
 
 <script>
 const PLAYERS = ['Pablo', 'Pete', 'Micky', 'Ryall'];
-const color = name => `var(--${PLAYERS.includes(name) ? name : 'Unpicked'})`;
+const GAMES = 82;
+const color = n => `var(--${PLAYERS.includes(n) ? n : 'Unpicked'})`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const get = p => fetch(`${p}?${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
+const ord = n => n + (['th','st','nd','rd'][(n % 100 - 20) % 10] || ['th','st','nd','rd'][n % 100] || 'th');
 const fmtDay = iso => new Date(iso + 'T12:00:00').toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+const half = n => String(n).replace('.5', '½');
 
-// Very dark team colors (Nets, Spurs) disappear on navy, so fall back to their alternate color.
-function stripeColor(t) {
-  const hex = (t.color || '#888888').replace('#', '');
-  const [r, g, b] = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16));
-  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return lum < 40 ? (t.alt || '#888888') : t.color;
+// Early-season records are noisy, so blend each team with a .500 start.
+const smooth = t => (t.wins + 5) / (t.wins + t.losses + 10);
+const projTeam = t => t.wins + Math.max(0, GAMES - t.wins - t.losses) * smooth(t);
+// What a team drafted at a given pick "should" win, sliding from .650 at #1 to .350 at #28.
+const expected = (pick, total) => 0.65 - (pick - 1) * (0.30 / Math.max(total - 1, 1));
+const gamesBack = (a, b) => ((a.wins - b.wins) + (b.losses - a.losses)) / 2;
+
+// Snake draft: overall pick number for each team, from the order in picks.json.
+function draftNumbers(picks) {
+  const order = Object.keys(picks.players), out = {};
+  order.forEach((name, p) => picks.players[name].forEach((abbr, r) => {
+    out[abbr] = r * order.length + (r % 2 === 0 ? p + 1 : order.length - p);
+  }));
+  return out;
 }
 
-const get = path => fetch(`data/${path}?${Date.now()}`).then(r => r.ok ? r.json() : null).catch(() => null);
-
-Promise.all([get('standings.json'), get('history.json'), get('last_night.json')]).then(([st, hist, night]) => {
-  if (!st) {
-    document.getElementById('updated').textContent = 'No standings yet. Run the "Update NBA standings" workflow on GitHub.';
-    return;
-  }
+Promise.all([get('data/standings.json'), get('data/history.json'), get('data/last_night.json'), get('picks.json')])
+.then(([st, hist, night, picks]) => {
+  if (!st) { document.getElementById('updated').textContent = 'No standings yet. Run the "Update NBA standings" workflow on GitHub.'; return; }
   document.getElementById('season').textContent = st.season;
   document.getElementById('updated').textContent =
     'Updated ' + new Date(st.updated).toLocaleString(undefined, {weekday: 'short', hour: 'numeric', minute: '2-digit'});
 
-  renderRace(hist, st);
-  renderStandings(st);
-  renderLastNight(night);
-  renderRosters(st);
+  const pickNo = picks ? draftNumbers(picks) : {};
+  const totalPicks = Object.keys(pickNo).length || 28;
+  const players = st.players.map(p => ({
+    ...p,
+    proj: Math.round(p.teams.reduce((s, t) => s + projTeam(t), 0)),
+    teams: p.teams.map(t => ({...t, owner: p.name, pick: pickNo[t.abbr], v: pickNo[t.abbr] ? smooth(t) - expected(pickNo[t.abbr], totalPicks) : 0})),
+  }));
+
+  headline(players, night);
+  cards(players, hist, night);
+  lastNight(night);
+  race(hist);
+  report(players);
+  nobody(st.unpicked);
 });
 
-function renderRace(hist, st) {
-  const el = document.getElementById('race');
+function headline(players, night) {
+  const byProj = [...players].sort((a, b) => b.proj - a.proj);
+  const [a, b] = byProj, last = byProj[byProj.length - 1];
+  const margin = a.proj - b.proj;
+  let h;
+  if (margin <= 3) h = `${a.name} and ${b.name} are on pace for a photo finish`;
+  else h = `${a.name} is on pace to win it by ${margin}`;
+
+  let tonight = '';
+  if (night && night.games.length) {
+    const nights = PLAYERS.map(n => ({n, ...night.haul[n]})).filter(x => x.wins + x.losses > 0)
+      .sort((x, y) => y.wins - x.wins || x.losses - y.losses);
+    const best = nights[0], worst = nights[nights.length - 1];
+    if (best && worst && best.n !== worst.n && best.wins > worst.wins)
+      tonight = ` Last night, ${best.n} went ${best.wins}–${best.losses} and ${worst.n} went ${worst.wins}–${worst.losses}.`;
+    else if (best) tonight = ` Last night, ${best.n} went ${best.wins}–${best.losses}.`;
+  }
+  document.getElementById('headline').textContent = h;
+  document.getElementById('dek').textContent =
+    `Projected finish: ${byProj.map(p => `${p.name} ${p.proj}`).join(', ')}.` + tonight;
+}
+
+function cards(players, hist, night) {
   const days = hist ? Object.keys(hist.days) : [];
-  if (days.length < 2) { el.innerHTML = '<p class="empty">The race chart appears after a couple of game days.</p>'; return; }
+  const lead = players[0];
+  const maxW = Math.max(...players.map(q => q.wins), 1);
 
-  // Cumulative wins per player, starting from zero the day before opening night.
-  const series = PLAYERS.map(name => {
+  document.getElementById('strip').innerHTML = players.map((p, i) =>
+    `<button style="--c:${color(p.name)}" data-i="${i}" aria-current="${i === 0}" aria-label="${esc(p.name)}, ${p.wins} wins">
+      <span class="n tab">${p.wins}</span><span class="who">${esc(p.name)}</span></button>`).join('');
+
+  document.getElementById('deck').innerHTML = players.map((p, i) => {
+    const next = players[1];
+    const place = i === 0
+      ? (next && gamesBack(p, next) > 0 ? `1st, leading by ${half(gamesBack(p, next))}` : '1st, tied')
+      : `${ord(i + 1)}, ${gamesBack(lead, p) ? half(gamesBack(lead, p)) + ' back' : 'tied'}`;
+    const ranked = [...p.teams].sort((a, b) => b.v - a.v);
+    const best = ranked[0], worst = ranked[ranked.length - 1];
+    const last = night && night.games.length ? night.haul[p.name] : null;
     let total = 0;
-    const pts = [0, ...days.map(d => (total += hist.days[d][name] || 0))];
-    return {name, pts};
-  });
-  const n = days.length;
-  const max = Math.max(...series.map(s => s.pts[n]));
-  const step = max > 60 ? 20 : max > 25 ? 10 : 5;
-  const top = Math.ceil((max + 1) / step) * step;
-
-  const W = 360, H = 230, L = 22, R = 78, T = 10, B = 24;
-  const x = i => L + (i / n) * (W - L - R);
-  const y = v => T + (1 - v / top) * (H - T - B);
-
-  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${series.map(s => `${s.name} ${s.pts[n]} wins`).join(', ')}">`;
-  for (let v = 0; v <= top; v += step) {
-    svg += `<line class="grid" x1="${L}" x2="${W - R + 8}" y1="${y(v)}" y2="${y(v)}"/>`;
-    svg += `<text class="tick" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
-  }
-  svg += `<text class="tick" x="${x(0)}" y="${H - 4}">${fmtDay(days[0])}</text>`;
-  svg += `<text class="tick" x="${x(n)}" y="${H - 4}" text-anchor="end">${fmtDay(days[n - 1])}</text>`;
-
-  // Draw the leader last so it sits on top.
-  const order = [...series].sort((a, b) => a.pts[n] - b.pts[n]);
-  for (const s of order) {
-    const d = s.pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
-    svg += `<path class="path draw" d="${d}" stroke="${color(s.name)}" style="--len:1200"/>`;
-    svg += `<circle class="dot" cx="${x(n)}" cy="${y(s.pts[n])}" r="4.5" fill="${color(s.name)}"/>`;
-  }
-
-  // End labels, nudged apart so tied players don't overlap.
-  const labels = order.map(s => ({s, y: y(s.pts[n])})).sort((a, b) => a.y - b.y);
-  const gap = 26;
-  for (let i = 1; i < labels.length; i++) labels[i].y = Math.max(labels[i].y, labels[i - 1].y + gap);
-  const overflow = labels[labels.length - 1].y - (H - B);
-  if (overflow > 0) labels.forEach(l => l.y -= overflow);
-  for (let i = labels.length - 2; i >= 0; i--) labels[i].y = Math.min(labels[i].y, labels[i + 1].y - gap);
-  for (const {s, y: ly} of labels) {
-    svg += `<text x="${x(n) + 12}" y="${ly + 8}" fill="${color(s.name)}"><tspan class="end-num">${s.pts[n]}</tspan><tspan class="end-name" dx="4">${esc(s.name)}</tspan></text>`;
-  }
-  el.innerHTML = svg + '</svg>';
-}
-
-function renderStandings(st) {
-  const lead = st.players[0];
-  document.getElementById('standings').innerHTML = st.players.map((p, i) => {
-    const gb = ((lead.wins - p.wins) + (p.losses - lead.losses)) / 2;
-    const back = i === 0 ? 'Leading' : gb === 0 ? 'Tied' : `${gb} back`;
-    const pct = lead.wins ? Math.max(4, (p.wins / lead.wins) * 100) : 4;
-    return `<li style="color:${color(p.name)}">
-      <span class="big">${p.wins}</span>
-      <span><span class="who">${esc(p.name)}</span><span class="bar" style="width:${pct}%;display:block"></span></span>
-      <span class="rec" style="color:var(--text)">${p.wins}–${p.losses}<span class="back">${back}</span></span>
-    </li>`;
+    const pts = [0, ...days.map(d => (total += hist.days[d][p.name] || 0))];
+    const sx = k => (k / Math.max(pts.length - 1, 1)) * 300, sy = v => 40 - (v / maxW) * 36;
+    const spark = pts.length > 2 ? `<div class="spark"><svg viewBox="0 0 300 44" preserveAspectRatio="none" aria-hidden="true">
+      <path d="${pts.map((v, k) => `${k ? 'L' : 'M'}${sx(k).toFixed(1)},${sy(v).toFixed(1)}`).join('')}" fill="none" stroke="#14161C" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>` : '';
+    const lastLine = last ? (last.wins + last.losses ? `Last night ${last.wins}–${last.losses}` : 'Off last night') : '';
+    const teams = [...p.teams].sort((a, b) => (a.pick || 99) - (b.pick || 99)).map(t =>
+      `<li><span class="pick tab">${t.pick || ''}</span><span class="t">${esc(t.name)}</span><span class="wl tab">${t.wins}–${t.losses}</span></li>`).join('');
+    const pickBox = (label, t) => `<div><small>${label}</small><b>${esc(t.short || t.name)}</b><span>${t.pick ? ord(t.pick) + ' pick, ' : ''}${t.wins}–${t.losses}</span></div>`;
+    return `<article class="card" id="card-${i}" style="--c:${color(p.name)}" aria-label="${esc(p.name)}">
+      <span class="place">${place}</span>
+      <h2>${esc(p.name)}</h2>
+      <div class="score"><span class="wins tab">${p.wins}</span>
+        <span class="side"><b class="tab">${p.wins}–${p.losses}</b>${lastLine}</span></div>
+      ${spark}
+      <div class="proj"><span>Projected finish</span><b class="tab">${p.proj}</b></div>
+      <div class="picks">${pickBox('Best pick', best)}${pickBox('Worst pick', worst)}</div>
+      <ul class="teams" aria-label="Teams in draft order">${teams}</ul>
+    </article>`;
   }).join('');
+
+  const deck = document.getElementById('deck'), dots = document.getElementById('dots');
+  dots.innerHTML = players.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('');
+  const buttons = [...document.querySelectorAll('.strip button')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  buttons.forEach(b => b.addEventListener('click', () => {
+    const card = document.getElementById('card-' + b.dataset.i);
+    deck.scrollTo({left: card.offsetLeft - (deck.clientWidth - card.clientWidth) / 2, behavior: reduce ? 'auto' : 'smooth'});
+  }));
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.intersectionRatio > 0.6) {
+      const i = +e.target.id.split('-')[1];
+      buttons.forEach((b, k) => b.setAttribute('aria-current', k === i));
+      [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
+    }
+  }), {root: deck, threshold: 0.6});
+  deck.querySelectorAll('.card').forEach(c => io.observe(c));
 }
 
-function renderLastNight(night) {
-  const el = document.getElementById('last-night');
+function lastNight(night) {
+  const el = document.getElementById('night');
   if (!night) return;
   const day = new Date(night.date + 'T12:00:00').toLocaleDateString(undefined, {weekday: 'long', month: 'short', day: 'numeric'});
-  if (!night.games.length) {
-    el.innerHTML = `<h2>Last night<small>${esc(day)}</small></h2><p class="empty">No games were played.</p>`;
-    return;
-  }
-  const haul = PLAYERS.map(name => ({name, ...night.haul[name]}))
-    .sort((a, b) => b.wins - a.wins || a.losses - b.losses)
-    .map(h => `<div style="color:${color(h.name)}">
-        <span>${esc(h.name)}</span>
-        <b>+${h.wins}</b>
-        <span class="rec">${h.wins + h.losses ? `${h.wins}–${h.losses}` : 'Off night'}</span>
-      </div>`).join('');
-
-  const side = (t, final) => `
-    <div class="side ${final && !t.winner ? 'lost' : ''}">
-      <span class="stripe" style="background:${stripeColor(t)}"></span>
-      <span class="team">${esc(t.short || t.name)}<small>${esc(t.record || '')}</small></span>
-      <span class="owner" style="color:${color(t.owner)}">${esc(t.owner === 'Unpicked' ? 'No one' : t.owner)}</span>
-      <span class="score">${t.score ?? ''}</span>
-    </div>`;
-  const games = night.games.map(g => `<div class="game">${side(g.away, g.final)}${side(g.home, g.final)}
-    ${g.final ? '' : `<p class="note">${esc(g.status)}</p>`}</div>`).join('');
-
-  el.innerHTML = `<h2>Last night<small>${esc(day)}</small></h2><div class="haul">${haul}</div><div class="games">${games}</div>`;
+  if (!night.games.length) { el.innerHTML = `<h3>Last night<small>${esc(day)}</small></h3><p class="empty">No games were played.</p>`; return; }
+  const row = (t, f) => `<div class="row ${f && !t.winner ? 'lost' : ''}">
+      <span class="t">${esc(t.short || t.abbr)}<small>${esc(t.record || '')}</small></span>
+      <span class="o ${PLAYERS.includes(t.owner) ? '' : 'none'}" style="--c:${color(t.owner)}">${esc(PLAYERS.includes(t.owner) ? t.owner : 'No one')}</span>
+      <span class="p tab">${t.score ?? ''}</span></div>`;
+  el.innerHTML = `<h3>Last night<small>${esc(day)}</small></h3><div class="games">` +
+    night.games.map(g => `<div class="game">${g.final ? '' : `<p class="status">${esc(g.status)}</p>`}${row(g.away, g.final)}${row(g.home, g.final)}</div>`).join('') + '</div>';
 }
 
-function renderRosters(st) {
-  const group = (name, g, label) => `
-    <details>
-      <summary><span style="color:${color(name)}">${esc(label)}</span><span class="rec">${g.wins}–${g.losses}</span></summary>
-      <ul class="roster">${g.teams.map(t => `
-        <li><span class="stripe" style="background:${stripeColor(t)};height:20px"></span>
-        <span class="team">${esc(t.name)}</span><span class="wl">${t.wins}–${t.losses}</span></li>`).join('')}
-      </ul>
-    </details>`;
-  document.getElementById('rosters').innerHTML =
-    '<h2>Teams</h2>' +
-    st.players.map(p => group(p.name, p, p.name)).join('') +
-    group('Unpicked', st.unpicked, 'Nobody picked them');
+function race(hist) {
+  const days = hist ? Object.keys(hist.days) : [];
+  if (days.length < 2) return;
+  const series = PLAYERS.map(name => { let t = 0; return {name, pts: [0, ...days.map(d => (t += hist.days[d][name] || 0))]}; });
+  const n = days.length, max = Math.max(...series.map(s => s.pts[n]));
+  const step = max > 120 ? 50 : max > 60 ? 20 : max > 25 ? 10 : 5, top = Math.ceil((max + 1) / step) * step;
+  const W = 360, H = 210, L = 26, R = 74, T = 8, B = 22;
+  const x = i => L + (i / n) * (W - L - R), y = v => T + (1 - v / top) * (H - T - B);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Wins so far: ${series.map(s => `${s.name} ${s.pts[n]}`).join(', ')}">`;
+  for (let v = 0; v <= top; v += step)
+    svg += `<line class="grid" x1="${L}" x2="${W - R + 6}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  svg += `<text class="tick" x="${x(0)}" y="${H - 3}">${fmtDay(days[0])}</text><text class="tick" x="${x(n)}" y="${H - 3}" text-anchor="end">${fmtDay(days[n - 1])}</text>`;
+  const order = [...series].sort((a, b) => a.pts[n] - b.pts[n]);
+  for (const s of order) {
+    svg += `<path class="path" stroke="${color(s.name)}" d="${s.pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('')}"/>`;
+    svg += `<circle class="dot" cx="${x(n)}" cy="${y(s.pts[n])}" r="4" fill="${color(s.name)}"/>`;
+  }
+  const labels = order.map(s => ({s, y: y(s.pts[n])})).sort((a, b) => a.y - b.y);
+  for (let i = 1; i < labels.length; i++) labels[i].y = Math.max(labels[i].y, labels[i - 1].y + 22);
+  const over = labels[labels.length - 1].y - (H - B); if (over > 0) labels.forEach(l => l.y -= over);
+  for (const {s, y: ly} of labels)
+    svg += `<text x="${x(n) + 10}" y="${ly + 7}" fill="${color(s.name)}"><tspan class="end">${s.pts[n]}</tspan><tspan class="end-name" dx="4">${esc(s.name)}</tspan></text>`;
+  document.getElementById('race-wrap').innerHTML = `<h3>The race</h3><div class="race">${svg}</svg></div>`;
+}
+
+function report(players) {
+  const all = players.flatMap(p => p.teams).filter(t => t.pick).sort((a, b) => b.v - a.v);
+  if (all.length < 2) return;
+  const box = (label, t) => `<div style="--c:${color(t.owner)}"><small>${label}</small>
+    <b>${esc(t.owner)}'s ${esc(t.short || t.name)}</b><span>Taken ${ord(t.pick)}, now ${t.wins}–${t.losses}</span></div>`;
+  document.getElementById('report-wrap').innerHTML =
+    `<h3>Draft report</h3><div class="report">${box('Best value', all[0])}${box('Biggest bust', all[all.length - 1])}</div>`;
+}
+
+function nobody(u) {
+  if (!u || !u.teams.length) return;
+  const proj = Math.round(u.teams.reduce((s, t) => s + projTeam(t), 0));
+  const names = u.teams.map(t => t.short || t.name).join(' and ');
+  const verdict = u.wins <= u.losses ? 'No regrets so far.' : 'Somebody should have taken them.';
+  document.getElementById('nobody-wrap').innerHTML = `<h3>The teams nobody took</h3><div class="nobody">
+    <p class="big tab">${esc(names)}: ${u.wins}–${u.losses}</p>
+    <p>${verdict} Together they're on pace for about ${proj} wins.</p>
+    <ul>${u.teams.map(t => `<li><span>${esc(t.name)}</span><span class="tab">${t.wins}–${t.losses}</span></li>`).join('')}</ul></div>`;
 }
 </script>
 </body>
