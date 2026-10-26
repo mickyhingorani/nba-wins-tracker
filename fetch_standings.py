@@ -126,6 +126,11 @@ def build_group(abbrs, teams):
 def parse_scoreboard(espn, owners, teams):
     games = []
     for ev in espn.get("events", []):
+        # Regular season only: ESPN tags each game with a season type (2 = regular season;
+        # preseason, play-in and playoff games carry other types).
+        season_type = (ev.get("season") or {}).get("type")
+        if season_type is not None and season_type != 2:
+            continue
         status = ev["status"]["type"]
         side = {}
         for c in ev["competitions"][0]["competitors"]:
@@ -190,18 +195,30 @@ def main():
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     today = date.fromisoformat(args.today) if args.today else eastern_today()
     yesterday = today - timedelta(days=1)
+    season_end = date.fromisoformat(picks["season_end"]) if picks.get("season_end") else None
 
-    # --- Daily history: fetch any finished day we don't have yet ---
     history = read_json(DATA_DIR / "history.json", {"days": {}})
     days = history.setdefault("days", {})
+
+    # Season over: once the last regular-season night is recorded and standings are marked
+    # final, leave everything exactly as it is.
+    if season_end and yesterday > season_end and season_end.isoformat() in days \
+            and read_json(DATA_DIR / "standings.json", {}).get("final"):
+        print(f"Regular season ended {season_end}; standings are final. Nothing to do.")
+        return
+
+    # The most recent night to record: last night, but never past the end of the regular season.
+    night = min(yesterday, season_end) if season_end else yesterday
+
+    # --- Daily history: fetch any finished day we don't have yet ---
     start = date.fromisoformat(picks["season_start"])
     last_night_games = None
     d = start
-    while d <= yesterday:
+    while d <= night:
         key = d.isoformat()
-        if key not in days or d == yesterday:
+        if key not in days or d == night:
             games = parse_scoreboard(src.scoreboard(d), owners, teams)
-            if d == yesterday:
+            if d == night:
                 last_night_games = games
             if all(g["final"] for g in games):  # only store a day once it's complete
                 days[key] = {n: t["wins"] for n, t in tally(games, names).items()}
@@ -221,16 +238,18 @@ def main():
         print(f"Note: history totals {totals} differ from standings {expected} "
               "(normal if a game was still in progress).")
 
+    final = bool(season_end and season_end.isoformat() in history["days"] and yesterday >= season_end)
     write("standings.json", {"season": espn_season or picks.get("season", ""), "updated": now,
-                             "players": players, "unpicked": unpicked})
+                             "final": final, "players": players, "unpicked": unpicked})
     write("history.json", history)
-    write("last_night.json", {"date": yesterday.isoformat(), "updated": now,
+    write("last_night.json", {"date": night.isoformat(), "updated": now,
                               "games": last_night_games or [],
                               "haul": tally(last_night_games or [], names)})
 
     for p in players:
         print(f"{p['name']:<8} {p['wins']:>3}-{p['losses']}")
-    print(f"History: {len(history['days'])} days; last night ({yesterday}): {len(last_night_games or [])} games")
+    print(f"History: {len(history['days'])} days; last night ({night}): {len(last_night_games or [])} games"
+          + ("; regular season complete, standings final" if final else ""))
 
 
 if __name__ == "__main__":

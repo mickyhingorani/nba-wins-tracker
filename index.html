@@ -215,6 +215,7 @@ const gamesBack = (a, b) => ((a.wins - b.wins) + (b.losses - a.losses)) / 2;
 // Projection: the team's real record so far, plus 20 games' worth of its preseason Vegas line,
 // projected over the games it has left. Early on the line dominates; by midseason the record does.
 let LINES = {};
+let FINAL = false; // true once the regular season is over
 const line = t => LINES[t.abbr] ?? GAMES / 2;
 const projTeam = t => {
   const played = t.wins + t.losses;
@@ -235,6 +236,7 @@ Promise.all([get('data/standings.json'), get('data/history.json'), get('data/las
 .then(([st, hist, night, picks]) => {
   if (!st) { document.getElementById('updated').textContent = 'No standings yet. Run the "Update NBA standings" workflow on GitHub.'; return; }
   LINES = (picks && picks.preseason_win_totals) || {};
+  FINAL = !!st.final;
   document.getElementById('season').textContent = st.season;
   document.getElementById('updated').textContent = 'Updated ' + new Date(st.updated).toLocaleString(undefined,
     {weekday: 'short', hour: 'numeric', minute: '2-digit', timeZoneName: 'short'});
@@ -263,6 +265,14 @@ Promise.all([get('data/standings.json'), get('data/history.json'), get('data/las
 });
 
 function headline(players, night) {
+  if (FINAL) {
+    const [w, r] = players;
+    document.getElementById('headline').textContent = w.wins === r.wins
+      ? `${w.name} and ${r.name} finish tied at ${w.wins} wins`
+      : `${w.name} wins the ${document.getElementById('season').textContent} season with ${w.wins} wins`;
+    document.getElementById('dek').textContent = `Final standings: ${players.map(p => `${p.name} ${p.wins}`).join(', ')}.`;
+    return;
+  }
   const byProj = [...players].sort((a, b) => b.proj - a.proj);
   const [a, b] = byProj;
   const margin = a.proj - b.proj;
@@ -296,7 +306,7 @@ function cards(players, hist, night) {
   document.getElementById('deck').innerHTML = players.map((p, i) => {
     const next = players[1];
     const place = i === 0
-      ? (next && gamesBack(p, next) > 0 ? `1st, leading by ${half(gamesBack(p, next))}` : '1st, tied')
+      ? (next && gamesBack(p, next) > 0 ? `${FINAL ? 'Champion, won' : '1st, leading'} by ${half(gamesBack(p, next))}` : '1st, tied')
       : `${ord(i + 1)}, ${gamesBack(lead, p) ? half(gamesBack(lead, p)) + ' back' : 'tied'}`;
     const ranked = [...p.teams].sort((a, b) => b.diff - a.diff);
     const best = ranked[0], worst = ranked[ranked.length - 1];
@@ -318,7 +328,7 @@ function cards(players, hist, night) {
       <div class="score"><span class="wins tab">${p.wins}</span>
         <span class="side"><b class="tab">${p.wins}–${p.losses}</b>${lastLine}</span></div>
       ${spark}
-      <div class="proj"><span>Projected finish</span><b class="tab">${p.proj}</b></div>
+      <div class="proj"><span>${FINAL ? 'Final' : 'Projected finish'}</span><b class="tab">${FINAL ? `${p.wins}–${p.losses}` : p.proj}</b></div>
       <div class="picks">${pickBox('Best pick', best)}${pickBox('Worst pick', worst)}</div>
       <ul class="teams" aria-label="Teams in draft order">${teams}</ul>
     </article>`;
@@ -391,21 +401,21 @@ function report(players) {
   if (all.length < 2) return;
   const box = (label, t) => `<div style="--c:${color(t.owner)}"><small>${label}</small>
     <b>${esc(t.owner)}'s ${esc(t.short || t.name)}</b>
-    <span>${t.pick ? `Taken ${ord(t.pick)}. ` : ''}Vegas said ${t.line}; on pace for ${Math.round(t.proj)}.</span></div>`;
+    <span>${t.pick ? `Taken ${ord(t.pick)}. ` : ''}Vegas said ${t.line}; ${FINAL ? `finished with ${t.wins}` : `on pace for ${Math.round(t.proj)}`}.</span></div>`;
   document.getElementById('report-wrap').innerHTML =
     `<h3>Draft report</h3><div class="report">${box('Best value', all[0])}${box('Biggest bust', all[all.length - 1])}</div>`;
 }
 
 function nobody(teams, u) {
   if (!teams.length) return;
-  const proj = Math.round(teams.reduce((s, t) => s + t.proj, 0));
+  const proj = FINAL ? u.wins : Math.round(teams.reduce((s, t) => s + t.proj, 0));
   const line = teams.reduce((s, t) => s + (t.line ?? GAMES / 2), 0);
   const names = teams.map(t => t.short || t.name).join(' and ');
   const verdict = proj - line > 3 ? 'Somebody should have taken them.' : 'No regrets so far.';
   document.getElementById('nobody-wrap').innerHTML = `<h3>The teams nobody took</h3><div class="nobody">
     <p class="big tab">${esc(names)}: ${u.wins}–${u.losses}</p>
-    <p>${verdict} Together they're on pace for about ${proj} wins; Vegas expected ${line}.</p>
-    <ul>${teams.map(t => `<li><span>${esc(t.name)}</span><span class="tab">${t.wins}–${t.losses}, on pace for ${Math.round(t.proj)}</span></li>`).join('')}</ul></div>`;
+    <p>${verdict} ${FINAL ? `Together they won ${proj} games` : `Together they're on pace for about ${proj} wins`}; Vegas expected ${line}.</p>
+    <ul>${teams.map(t => `<li><span>${esc(t.name)}</span><span class="tab">${t.wins}–${t.losses}${FINAL ? '' : `, on pace for ${Math.round(t.proj)}`}</span></li>`).join('')}</ul></div>`;
 }
 </script>
 </body>
