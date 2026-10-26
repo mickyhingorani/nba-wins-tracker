@@ -20,6 +20,7 @@
 <body>
 <h1>NBA Wins</h1>
 <p class="updated" id="updated">Loading…</p>
+<div id="last-night"></div>
 <div id="app"></div>
 
 <script>
@@ -34,6 +35,28 @@ function teamTable(group) {
   return `<table><tr><th>Team</th><th class="num">W</th><th class="num">L</th></tr>${rows}
     <tr><th>Total</th><th class="num">${group.wins}</th><th class="num">${group.losses}</th></tr></table>`;
 }
+
+fetch('data/last_night.json?' + Date.now())
+  .then(r => r.ok ? r.json() : null)
+  .then(n => {
+    if (!n) return;
+    const day = new Date(n.date + 'T12:00:00').toLocaleDateString(undefined, {weekday: 'long', month: 'short', day: 'numeric'});
+    const side = t => `<span class="team">${t.logo ? `<img src="${esc(t.logo)}" alt="">` : ''}${t.winner ? '<b>' : ''}${esc(t.name)} ${t.score ?? ''}${t.winner ? '</b>' : ''}
+      <span class="muted">(${esc(t.owner)})</span></span>`;
+    const games = n.games.length
+      ? n.games.map(g => `<tr><td>${side(g.away)}${side(g.home)}</td>
+          <td class="num muted">${g.final ? 'Final' : esc(g.status)}</td></tr>`).join('')
+      : '<tr><td class="muted">No games.</td></tr>';
+    const haul = Object.entries(n.haul)
+      .filter(([, h]) => h.wins + h.losses > 0)
+      .sort((a, b) => b[1].wins - a[1].wins)
+      .map(([name, h]) => `${esc(name)} ${h.wins}-${h.losses}`).join(' · ');
+    document.getElementById('last-night').innerHTML =
+      `<h2>Last night <span class="muted">(${esc(day)})</span></h2>
+       <p>${haul || '<span class="muted">No games.</span>'}</p>
+       <table>${games}</table>`;
+  })
+  .catch(() => {});
 
 fetch('data/standings.json?' + Date.now())
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
