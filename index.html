@@ -31,21 +31,23 @@
   html { background: var(--bg); }
   body {
     margin: 0; color: var(--text); font: 400 15px/1.45 var(--face);
-    /* Blue-stained herringbone floor, barely there */
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 480px),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg fill='none' stroke='%23FFFFFF' stroke-opacity='0.04' stroke-width='1'%3E%3Cpath d='M0 0l24 24L48 0M0 12l24 24 24-24M0 24l24 24 24-24M0 36l12 12M36 48l12-12M24 24v12M24 0v12M0 0v12M48 0v12'/%3E%3C/g%3E%3C/svg%3E"),
-      var(--bg);
-    min-height: 100vh; position: relative; overflow-x: hidden;
+    background: var(--bg);
+    min-height: 100vh; position: relative; overflow-x: hidden; isolation: isolate;
   }
   :focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
   .wrap { max-width: 560px; margin: 0 auto; padding: 0 16px; position: relative; }
   .tab { font-variant-numeric: tabular-nums; }
 
   /* Faint painted lines: half-court line and center circle behind the top of the page */
-  .court-clip { position: absolute; top: 0; left: 0; right: 0; height: 760px; overflow: hidden; pointer-events: none; }
-  .court { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 1000px; height: 560px; }
-  .court * { fill: none; stroke: var(--court-line); stroke-width: 2.5; }
+  /* The floor stays put while the page scrolls over it: arena light from above, one half-court filling the screen */
+  .court-clip {
+    position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+    background:
+      radial-gradient(ellipse 110% 70% at 50% 0, rgba(132, 166, 255, 0.20), rgba(132, 166, 255, 0) 72%),
+      radial-gradient(ellipse 150% 45% at 50% 100%, rgba(5, 10, 24, 0.5), rgba(5, 10, 24, 0) 70%);
+  }
+  .court { position: absolute; top: 3vh; left: 50%; height: 94vh; width: calc(94vh * 50 / 47); transform: translateX(-50%); overflow: visible; }
+  .court * { fill: none; stroke: var(--court-line); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
 
   header.wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; }
   .brand { margin: 0; display: flex; align-items: center; gap: 8px; font: 800 18px/1 var(--face); font-stretch: 75%; }
@@ -126,8 +128,6 @@
 
   .race { background: var(--raise); border-radius: 16px; padding: 12px 8px 6px; position: relative; overflow: hidden; }
   .race svg { display: block; width: 100%; height: auto; overflow: visible; position: relative; }
-  .race .arc { position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%); width: 120%; height: auto; }
-  .race .arc * { fill: none; stroke: rgba(255, 255, 255, 0.06); stroke-width: 2.5; }
   .race .grid { stroke: var(--line); }
   .race .tick { fill: var(--muted); font: 500 11px var(--face); }
   .race .path { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
@@ -161,10 +161,20 @@
 </style>
 </head>
 <body>
-<div class="court-clip" aria-hidden="true"><svg class="court" viewBox="0 0 1000 560">
-  <line x1="0" y1="300" x2="1000" y2="300"/>
-  <circle cx="500" cy="300" r="170"/>
-  <circle cx="500" cy="300" r="56"/>
+<!-- A regulation half-court in feet: half-court line at y=0, baseline at y=47, basket centered at x=0 -->
+<div class="court-clip" aria-hidden="true"><svg class="court" id="court" viewBox="-25 0 50 47">
+  <line x1="-25" y1="0" x2="25" y2="0"/>
+  <circle cx="0" cy="0" r="6"/>
+  <circle cx="0" cy="0" r="2"/>
+  <line x1="-25" y1="0" x2="-25" y2="47"/>
+  <line x1="25" y1="0" x2="25" y2="47"/>
+  <line x1="-25" y1="47" x2="25" y2="47"/>
+  <path d="M-22 47V32.8A23.75 23.75 0 0 1 22 32.8V47"/>
+  <rect x="-8" y="28" width="16" height="19"/>
+  <circle cx="0" cy="28" r="6"/>
+  <path d="M-4 41.75A4 4 0 0 1 4 41.75"/>
+  <line x1="-3" y1="43" x2="3" y2="43"/>
+  <circle cx="0" cy="41.75" r="0.75"/>
 </svg></div>
 
 <header class="wrap">
@@ -245,6 +255,7 @@ Promise.all([get('data/standings.json'), get('data/history.json'), get('data/las
   race(hist);
   report(players);
   nobody(st.unpicked.teams.map(t => withMath(t, 'Unpicked')), st.unpicked);
+
   document.getElementById('fine').textContent =
     'Projections start from each team\'s preseason Vegas win total and shift toward its real record as games are played. ' +
     'Best and worst picks compare where each team is headed with what Vegas expected. ' +
@@ -358,9 +369,6 @@ function race(hist) {
   const step = max > 120 ? 50 : max > 60 ? 20 : max > 25 ? 10 : 5, top = Math.ceil((max + 1) / step) * step;
   const W = 360, H = 210, L = 26, R = 74, T = 8, B = 22;
   const x = i => L + (i / n) * (W - L - R), y = v => T + (1 - v / top) * (H - T - B);
-  // A faint three-point arc and lane painted under the chart
-  const arc = `<svg class="arc" viewBox="0 0 400 200" aria-hidden="true">
-    <path d="M40 200 L40 170 A160 160 0 0 1 360 170 L360 200"/><rect x="152" y="104" width="96" height="96"/><path d="M152 104 A48 48 0 0 1 248 104"/></svg>`;
   let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Wins so far: ${series.map(s => `${s.name} ${s.pts[n]}`).join(', ')}">`;
   for (let v = 0; v <= top; v += step)
     svg += `<line class="grid" x1="${L}" x2="${W - R + 6}" y1="${y(v)}" y2="${y(v)}"/><text class="tick" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
@@ -375,7 +383,7 @@ function race(hist) {
   const over = labels[labels.length - 1].y - (H - B); if (over > 0) labels.forEach(l => l.y -= over);
   for (const {s, y: ly} of labels)
     svg += `<text x="${x(n) + 10}" y="${ly + 7}" fill="${color(s.name)}"><tspan class="end">${s.pts[n]}</tspan><tspan class="end-name" dx="4">${esc(s.name)}</tspan></text>`;
-  document.getElementById('race-wrap').innerHTML = `<h3>The race</h3><div class="race">${arc}${svg}</svg></div>`;
+  document.getElementById('race-wrap').innerHTML = `<h3>The race</h3><div class="race">${svg}</svg></div>`;
 }
 
 function report(players) {
