@@ -135,9 +135,7 @@
            overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; transition: height 0.2s; }
   .panes::-webkit-scrollbar { display: none; }
   .pane { scroll-snap-align: start; min-width: 0; }
-  .note { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
   .meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding: 7px 0 1px; }
-  .meta b { color: var(--text); font-weight: 600; }
   @media (prefers-reduced-motion: reduce) { .panes { transition: none; } }
 
   .race { background: var(--raise); border-radius: 16px; padding: 12px 8px 6px; position: relative; overflow: hidden; }
@@ -384,10 +382,6 @@ function games(night, tonight) {
       <span class="t">${esc(t.short || t.abbr)}<small>${esc(t.record || '')}</small></span>
       <span class="o ${PLAYERS.includes(t.owner) ? '' : 'none'}" style="--c:${color(t.owner)}">${esc(PLAYERS.includes(t.owner) ? t.owner : 'No one')}</span>
       <span class="p tab">${t.score ?? ''}</span></div>`;
-  const matchup = g => {
-    const a = g.away.owner, h = g.home.owner;
-    return PLAYERS.includes(a) && PLAYERS.includes(h) ? `<b>${esc(a)} vs. ${esc(h)}</b>` : '';
-  };
   const tip = g => new Date(g.start).toLocaleTimeString(undefined, {hour: 'numeric', minute: '2-digit', timeZoneName: 'short'});
 
   // Last night: final scores
@@ -396,14 +390,12 @@ function games(night, tonight) {
     lastPane = '<div class="games">' + night.games.map(g =>
       `<div class="game">${row(g.away, g)}${row(g.home, g)}${g.final ? '' : `<p class="status">${esc(g.status)}</p>`}</div>`).join('') + '</div>';
 
-  // Tonight: the morning's schedule, with tip times and head-to-head matchups
+  // Tonight: the morning's schedule, with tip times
   let tonightPane = '<p class="empty">No games tonight.</p>';
   if (FINAL) tonightPane = '<p class="empty">The regular season is over.</p>';
   else if (tonight && tonight.games.length) {
-    const h2h = tonight.games.filter(g => PLAYERS.includes(g.away.owner) && PLAYERS.includes(g.home.owner)).length;
-    tonightPane = `<p class="note">${tonight.games.length} game${tonight.games.length === 1 ? '' : 's'}, first tip at ${tip(tonight.games[0])}` +
-      `${h2h ? `; ${h2h} head-to-head` : ''}. Scores land here tomorrow morning.</p><div class="games">` +
-      tonight.games.map(g => `<div class="game"><div class="meta"><span>${tip(g)}</span>${matchup(g)}</div>${row(g.away, g)}${row(g.home, g)}</div>`).join('') + '</div>';
+    tonightPane = '<div class="games">' +
+      tonight.games.map(g => `<div class="game"><div class="meta"><span>${tip(g)}</span></div>${row(g.away, g)}${row(g.home, g)}</div>`).join('') + '</div>';
   }
 
   const tabs = [
