@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NBA Wins</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 16px; color: #222; }
+  h1 { margin-bottom: 0; }
+  .updated { color: #777; font-size: 0.85rem; margin-top: 0.25rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ddd; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  h2 { margin-bottom: 0.25rem; font-size: 1.1rem; }
+  .team { display: flex; align-items: center; gap: 8px; }
+  .team img { width: 22px; height: 22px; }
+  .muted { color: #777; }
+</style>
+</head>
+<body>
+<h1>NBA Wins</h1>
+<p class="updated" id="updated">Loading…</p>
+<div id="app"></div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function teamTable(group) {
+  const rows = group.teams.map(t => `
+    <tr>
+      <td><span class="team">${t.logo ? `<img src="${esc(t.logo)}" alt="">` : ''}${esc(t.name)}</span></td>
+      <td class="num">${t.wins}</td><td class="num">${t.losses}</td>
+    </tr>`).join('');
+  return `<table><tr><th>Team</th><th class="num">W</th><th class="num">L</th></tr>${rows}
+    <tr><th>Total</th><th class="num">${group.wins}</th><th class="num">${group.losses}</th></tr></table>`;
+}
+
+fetch('data/standings.json?' + Date.now())
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d => {
+    document.getElementById('updated').textContent =
+      `${d.season} season · updated ${new Date(d.updated).toLocaleString()}`;
+
+    const leader = d.players.map((p, i) => `
+      <tr><td>${i + 1}</td><td>${esc(p.name)}</td>
+      <td class="num">${p.wins}</td><td class="num">${p.losses}</td></tr>`).join('');
+
+    let html = `<table><tr><th>#</th><th>Player</th><th class="num">W</th><th class="num">L</th></tr>${leader}</table>`;
+    for (const p of d.players) html += `<h2>${esc(p.name)}</h2>${teamTable(p)}`;
+    html += `<h2>Unpicked <span class="muted">(did we blow it?)</span></h2>${teamTable(d.unpicked)}`;
+    document.getElementById('app').innerHTML = html;
+  })
+  .catch(() => {
+    document.getElementById('updated').textContent =
+      'No standings yet. Run the "Update NBA standings" workflow on GitHub.';
+  });
+</script>
+</body>
+</html>

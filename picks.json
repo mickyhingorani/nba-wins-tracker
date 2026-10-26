@@ -1,0 +1,10 @@
+{
+  "season": "2026-27",
+  "players": {
+    "Pablo": ["OKC", "HOU", "MIA", "ATL", "PHX", "MEM", "WSH"],
+    "Micky": ["SA", "PHI", "IND", "ORL", "CHA", "DAL", "NO"],
+    "Ryall": ["DEN", "BOS", "TOR", "LAL", "GS", "UTAH", "BKN"],
+    "Pete":  ["NY", "DET", "CLE", "MIN", "POR", "CHI", "LAC"]
+  },
+  "unpicked": ["MIL", "SAC"]
+}
