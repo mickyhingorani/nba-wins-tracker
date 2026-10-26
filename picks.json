@@ -1,5 +1,6 @@
 {
   "season": "2026-27",
+  "season_start": "2026-10-20",
   "players": {
     "Pablo": ["OKC", "HOU", "MIA", "ATL", "PHX", "MEM", "WSH"],
     "Micky": ["SA", "PHI", "IND", "ORL", "CHA", "DAL", "NO"],

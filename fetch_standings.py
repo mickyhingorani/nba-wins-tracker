@@ -1,63 +1,113 @@
 """
-Pull current NBA standings and last night's games from ESPN's public feed,
+Pull NBA standings, team colors and daily results from ESPN's public feed,
 total wins per player using picks.json, and write:
-  data/standings.json   season totals
+  data/standings.json   season totals per player and team
   data/last_night.json  yesterday's games, tagged with owners
+  data/history.json     wins per player for every day of the season (for the race chart)
 
 Standard library only, so the GitHub Action needs no installs.
-Run locally with:  python3 fetch_standings.py
-Test offline with: python3 fetch_standings.py --standings-file a.json --scoreboard-file b.json
+Run:           python3 fetch_standings.py
+Test offline:  python3 fetch_standings.py --fixtures some_dir --today 2026-10-26
+               (some_dir holds standings.json, teams.json, scoreboard_YYYYMMDD.json)
 """
 
 import argparse
 import json
 import sys
 import urllib.request
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-STANDINGS_URL = "https://site.api.espn.com/apis/v2/sports/basketball/nba/standings"
-SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates={date}"
+ESPN = "https://site.api.espn.com/apis"
+STANDINGS_URL = f"{ESPN}/v2/sports/basketball/nba/standings"
+TEAMS_URL = f"{ESPN}/site/v2/sports/basketball/nba/teams"
+SCOREBOARD_URL = f"{ESPN}/site/v2/sports/basketball/nba/scoreboard?dates={{d}}"
+
 ROOT = Path(__file__).parent
 PICKS_FILE = ROOT / "picks.json"
 DATA_DIR = ROOT / "data"
 UNPICKED = "Unpicked"
 
 
-def get_json(url, from_file=None):
-    if from_file:
-        return json.loads(Path(from_file).read_text())
-    req = urllib.request.Request(url, headers={"User-Agent": "nba-wins-tracker/1.0"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.load(resp)
+class Source:
+    """Fetches from ESPN, or from saved files when testing."""
+
+    def __init__(self, fixtures=None):
+        self.fixtures = Path(fixtures) if fixtures else None
+
+    def _get(self, url, fixture_name):
+        if self.fixtures:
+            path = self.fixtures / fixture_name
+            return json.loads(path.read_text()) if path.exists() else {"events": []}
+        req = urllib.request.Request(url, headers={"User-Agent": "nba-wins-tracker/1.0"})
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.load(resp)
+
+    def standings(self):
+        return self._get(STANDINGS_URL, "standings.json")
+
+    def teams(self):
+        return self._get(TEAMS_URL, "teams.json")
+
+    def scoreboard(self, day):
+        d = day.strftime("%Y%m%d")
+        return self._get(SCOREBOARD_URL.format(d=d), f"scoreboard_{d}.json")
 
 
-def eastern_yesterday():
-    """Yesterday's date in US Eastern time. ESPN files games under the US date."""
+def eastern_today():
+    """Today's date in US Eastern time. ESPN files games under the US date."""
     try:
         from zoneinfo import ZoneInfo
-        now = datetime.now(ZoneInfo("America/New_York"))
+        return datetime.now(ZoneInfo("America/New_York")).date()
     except Exception:
-        now = datetime.now(timezone.utc) - timedelta(hours=5)
-    return (now - timedelta(days=1)).date()
+        return (datetime.now(timezone.utc) - timedelta(hours=5)).date()
+
+
+def read_json(path, default):
+    try:
+        return json.loads(Path(path).read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return default
+
+
+def write(name, obj):
+    DATA_DIR.mkdir(exist_ok=True)
+    (DATA_DIR / name).write_text(json.dumps(obj, indent=2) + "\n")
 
 
 # ---------- standings ----------
 
-def parse_teams(espn):
-    """Return {abbr: {name, logo, wins, losses}} for every team in the feed."""
+def parse_colors(espn_teams):
+    colors = {}
+    try:
+        for t in espn_teams["sports"][0]["leagues"][0]["teams"]:
+            team = t["team"]
+            colors[team["abbreviation"]] = {
+                "color": "#" + team.get("color", "888888"),
+                "alt": "#" + team.get("alternateColor", "cccccc"),
+            }
+    except (KeyError, IndexError):
+        pass  # colors are nice-to-have; the page falls back to grey
+    return colors
+
+
+def parse_teams(espn, colors):
+    """Return {abbr: {...}} for every team in the standings feed."""
     teams = {}
     for conference in espn["children"]:
         for entry in conference["standings"]["entries"]:
             team = entry["team"]
             stats = {s.get("name"): s for s in entry["stats"]}
             logos = team.get("logos") or [{}]
-            teams[team["abbreviation"]] = {
-                "abbr": team["abbreviation"],
+            abbr = team["abbreviation"]
+            teams[abbr] = {
+                "abbr": abbr,
                 "name": team["displayName"],
+                "short": team.get("shortDisplayName", team["displayName"]),
                 "logo": logos[0].get("href", ""),
                 "wins": int(stats["wins"]["value"]),
                 "losses": int(stats["losses"]["value"]),
+                **colors.get(abbr, {"color": "#888888", "alt": "#cccccc"}),
             }
     return teams, espn["children"][0]["standings"].get("seasonDisplayName", "")
 
@@ -71,60 +121,62 @@ def build_group(abbrs, teams):
     }
 
 
-# ---------- last night ----------
+# ---------- games ----------
 
-def parse_scoreboard(espn, owners):
+def parse_scoreboard(espn, owners, teams):
     games = []
     for ev in espn.get("events", []):
         status = ev["status"]["type"]
         side = {}
         for c in ev["competitions"][0]["competitors"]:
             abbr = c["team"]["abbreviation"]
-            record = next((r["summary"] for r in c.get("records", []) if r.get("type") == "total"), "")
+            score = c.get("score")
             side[c["homeAway"]] = {
                 "abbr": abbr,
-                "name": c["team"]["displayName"],
+                "name": c["team"].get("displayName", abbr),
+                "short": c["team"].get("shortDisplayName", abbr),
                 "logo": c["team"].get("logo", ""),
-                "score": int(c["score"]) if str(c.get("score", "")).isdigit() else None,
+                "score": int(score) if str(score).isdigit() else None,
                 "winner": bool(c.get("winner")),
-                "record": record,
+                "record": next((r["summary"] for r in c.get("records", []) if r.get("type") == "total"), ""),
                 "owner": owners.get(abbr, UNPICKED),
+                "color": teams.get(abbr, {}).get("color", "#888888"),
+                "alt": teams.get(abbr, {}).get("alt", "#cccccc"),
             }
-        games.append({
-            "start": ev["date"],
-            "final": bool(status.get("completed")),
-            "status": status.get("shortDetail", ""),
-            "away": side["away"],
-            "home": side["home"],
-        })
+        final = bool(status.get("completed"))
+        a, h = side["away"], side["home"]
+        # Fallback: if ESPN ever omits the winner flag on a final, use the score.
+        if final and not (a["winner"] or h["winner"]) and a["score"] is not None and h["score"] is not None:
+            a["winner"], h["winner"] = a["score"] > h["score"], h["score"] > a["score"]
+        games.append({"start": ev["date"], "final": final, "status": status.get("shortDetail", ""),
+                      "away": a, "home": h})
     games.sort(key=lambda g: g["start"])
     return games
 
 
-def build_haul(games, player_names):
-    haul = {name: {"wins": 0, "losses": 0} for name in player_names + [UNPICKED]}
+def tally(games, names):
+    out = {n: {"wins": 0, "losses": 0} for n in names}
     for g in games:
-        if not g["final"]:
-            continue
-        for t in (g["away"], g["home"]):
-            haul[t["owner"]]["wins" if t["winner"] else "losses"] += 1
-    return haul
+        if g["final"]:
+            for t in (g["away"], g["home"]):
+                out[t["owner"]]["wins" if t["winner"] else "losses"] += 1
+    return out
 
 
-def write(name, obj):
-    DATA_DIR.mkdir(exist_ok=True)
-    (DATA_DIR / name).write_text(json.dumps(obj, indent=2) + "\n")
-
+# ---------- main ----------
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--standings-file")
-    ap.add_argument("--scoreboard-file")
-    ap.add_argument("--date", help="YYYY-MM-DD for 'last night' (default: yesterday, Eastern)")
+    ap.add_argument("--fixtures", help="read ESPN data from this folder instead of the web")
+    ap.add_argument("--today", help="pretend today is YYYY-MM-DD (testing)")
     args = ap.parse_args()
 
+    src = Source(args.fixtures)
     picks = json.loads(PICKS_FILE.read_text())
-    teams, espn_season = parse_teams(get_json(STANDINGS_URL, args.standings_file))
+    names = list(picks["players"]) + [UNPICKED]
+    owners = {abbr: name for name, abbrs in picks["players"].items() for abbr in abbrs}
+
+    teams, espn_season = parse_teams(src.standings(), parse_colors(src.teams()))
 
     # Fail loudly if a pick doesn't match ESPN, or a team is missing/duplicated.
     assigned = [a for lst in picks["players"].values() for a in lst] + picks["unpicked"]
@@ -136,32 +188,49 @@ def main():
         sys.exit(f"Expected 30 teams from ESPN, got {len(teams)}")
 
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    today = date.fromisoformat(args.today) if args.today else eastern_today()
+    yesterday = today - timedelta(days=1)
 
-    # Season standings
+    # --- Daily history: fetch any finished day we don't have yet ---
+    history = read_json(DATA_DIR / "history.json", {"days": {}})
+    days = history.setdefault("days", {})
+    start = date.fromisoformat(picks["season_start"])
+    last_night_games = None
+    d = start
+    while d <= yesterday:
+        key = d.isoformat()
+        if key not in days or d == yesterday:
+            games = parse_scoreboard(src.scoreboard(d), owners, teams)
+            if d == yesterday:
+                last_night_games = games
+            if all(g["final"] for g in games):  # only store a day once it's complete
+                days[key] = {n: t["wins"] for n, t in tally(games, names).items()}
+        d += timedelta(days=1)
+    history["days"] = dict(sorted(days.items()))
+    history["players"] = names
+
+    # --- Season standings ---
     players = [{"name": name, **build_group(abbrs, teams)} for name, abbrs in picks["players"].items()]
     players.sort(key=lambda p: (-p["wins"], p["losses"]))
-    write("standings.json", {
-        "season": espn_season or picks.get("season", ""),
-        "updated": now,
-        "players": players,
-        "unpicked": build_group(picks["unpicked"], teams),
-    })
+    unpicked = build_group(picks["unpicked"], teams)
 
-    # Last night's games
-    owners = {abbr: name for name, abbrs in picks["players"].items() for abbr in abbrs}
-    night = datetime.strptime(args.date, "%Y-%m-%d").date() if args.date else eastern_yesterday()
-    scoreboard = get_json(SCOREBOARD_URL.format(date=night.strftime("%Y%m%d")), args.scoreboard_file)
-    games = parse_scoreboard(scoreboard, owners)
-    write("last_night.json", {
-        "date": night.isoformat(),
-        "updated": now,
-        "games": games,
-        "haul": build_haul(games, list(picks["players"])),
-    })
+    # Sanity check: daily history should add up to the standings.
+    totals = {n: sum(day.get(n, 0) for day in history["days"].values()) for n in names}
+    expected = {p["name"]: p["wins"] for p in players} | {UNPICKED: unpicked["wins"]}
+    if totals != expected:
+        print(f"Note: history totals {totals} differ from standings {expected} "
+              "(normal if a game was still in progress).")
+
+    write("standings.json", {"season": espn_season or picks.get("season", ""), "updated": now,
+                             "players": players, "unpicked": unpicked})
+    write("history.json", history)
+    write("last_night.json", {"date": yesterday.isoformat(), "updated": now,
+                              "games": last_night_games or [],
+                              "haul": tally(last_night_games or [], names)})
 
     for p in players:
         print(f"{p['name']:<8} {p['wins']:>3}-{p['losses']}")
-    print(f"Last night ({night}): {len(games)} games")
+    print(f"History: {len(history['days'])} days; last night ({yesterday}): {len(last_night_games or [])} games")
 
 
 if __name__ == "__main__":
