@@ -4,6 +4,7 @@ total wins per player using picks.json, and write:
   data/standings.json   season totals per player and team
   data/last_night.json  yesterday's games, tagged with owners
   data/history.json     wins per player for every day of the season (for the race chart)
+  data/tonight.json     today's schedule, tagged with owners (the page updates it live from ESPN)
 
 Standard library only, so the GitHub Action needs no installs.
 Run:           python3 fetch_standings.py
@@ -132,6 +133,7 @@ def parse_scoreboard(espn, owners, teams):
         if season_type is not None and season_type != 2:
             continue
         status = ev["status"]["type"]
+        state = status.get("state", "")  # "pre", "in" or "post"
         side = {}
         for c in ev["competitions"][0]["competitors"]:
             abbr = c["team"]["abbreviation"]
@@ -141,7 +143,7 @@ def parse_scoreboard(espn, owners, teams):
                 "name": c["team"].get("displayName", abbr),
                 "short": c["team"].get("shortDisplayName", abbr),
                 "logo": c["team"].get("logo", ""),
-                "score": int(score) if str(score).isdigit() else None,
+                "score": int(score) if str(score).isdigit() and state != "pre" else None,
                 "winner": bool(c.get("winner")),
                 "record": next((r["summary"] for r in c.get("records", []) if r.get("type") == "total"), ""),
                 "owner": owners.get(abbr, UNPICKED),
@@ -153,8 +155,8 @@ def parse_scoreboard(espn, owners, teams):
         # Fallback: if ESPN ever omits the winner flag on a final, use the score.
         if final and not (a["winner"] or h["winner"]) and a["score"] is not None and h["score"] is not None:
             a["winner"], h["winner"] = a["score"] > h["score"], h["score"] > a["score"]
-        games.append({"start": ev["date"], "final": final, "status": status.get("shortDetail", ""),
-                      "away": a, "home": h})
+        games.append({"start": ev["date"], "final": final, "state": state,
+                      "status": status.get("shortDetail", ""), "away": a, "home": h})
     games.sort(key=lambda g: g["start"])
     return games
 
@@ -245,6 +247,10 @@ def main():
     write("last_night.json", {"date": night.isoformat(), "updated": now,
                               "games": last_night_games or [],
                               "haul": tally(last_night_games or [], names)})
+
+    # Tonight's schedule: a morning snapshot the page falls back on if it can't reach ESPN live.
+    tonight_games = [] if (season_end and today > season_end) else parse_scoreboard(src.scoreboard(today), owners, teams)
+    write("tonight.json", {"date": today.isoformat(), "updated": now, "games": tonight_games})
 
     for p in players:
         print(f"{p['name']:<8} {p['wins']:>3}-{p['losses']}")

@@ -125,6 +125,20 @@
   .row .p { text-align: right; font: 700 18px var(--face); }
   .row.lost .t, .row.lost .p { color: var(--muted); }
   .status { color: var(--muted); font-size: 12px; margin: 4px 0 6px; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  .seg button { all: unset; cursor: pointer; background: var(--raise); border-radius: 10px; padding: 8px 12px; }
+  .seg button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  .seg button[aria-selected="true"] { background: var(--text); color: var(--ink); }
+  .seg b { display: block; font: 800 18px/1.1 var(--face); font-stretch: 80%; }
+  .seg small { font-size: 12px; opacity: 0.75; }
+  .panes { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 16px; align-items: start;
+           overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; transition: height 0.2s; }
+  .panes::-webkit-scrollbar { display: none; }
+  .pane { scroll-snap-align: start; min-width: 0; }
+  .note { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding: 7px 0 1px; }
+  .meta b { color: var(--text); font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .panes { transition: none; } }
 
   .race { background: var(--raise); border-radius: 16px; padding: 12px 8px 6px; position: relative; overflow: hidden; }
   .race svg { display: block; width: 100%; height: auto; overflow: visible; position: relative; }
@@ -192,7 +206,7 @@
 <div class="deck" id="deck"></div>
 <div class="dots" id="dots" aria-hidden="true"></div>
 <footer class="wrap">
-  <section id="night"></section>
+  <section id="games"></section>
   <section id="race-wrap"></section>
   <section id="report-wrap"></section>
   <section id="nobody-wrap"></section>
@@ -232,8 +246,8 @@ function draftNumbers(picks) {
   return out;
 }
 
-Promise.all([get('data/standings.json'), get('data/history.json'), get('data/last_night.json'), get('picks.json')])
-.then(([st, hist, night, picks]) => {
+Promise.all([get('data/standings.json'), get('data/history.json'), get('data/last_night.json'), get('picks.json'), get('data/tonight.json')])
+.then(([st, hist, night, picks, tonight]) => {
   if (!st) { document.getElementById('updated').textContent = 'No standings yet. Run the "Update NBA standings" workflow on GitHub.'; return; }
   LINES = (picks && picks.preseason_win_totals) || {};
   FINAL = !!st.final;
@@ -253,7 +267,7 @@ Promise.all([get('data/standings.json'), get('data/history.json'), get('data/las
 
   headline(players, night);
   cards(players, hist, night);
-  lastNight(night);
+  games(night, tonight);
   race(hist);
   report(players);
   nobody(st.unpicked.teams.map(t => withMath(t, 'Unpicked')), st.unpicked);
@@ -358,17 +372,68 @@ function cards(players, hist, night) {
   sync();
 }
 
-function lastNight(night) {
-  const el = document.getElementById('night');
-  if (!night) return;
-  const day = new Date(night.date + 'T12:00:00').toLocaleDateString(undefined, {weekday: 'long', month: 'short', day: 'numeric'});
-  if (!night.games.length) { el.innerHTML = `<h3>Last night<small>${esc(day)}</small></h3><p class="empty">No games were played.</p>`; return; }
-  const row = (t, f) => `<div class="row ${f && !t.winner ? 'lost' : ''}">
+function games(night, tonight) {
+  const el = document.getElementById('games');
+  if (!night && !tonight) return;
+  const localISO = d => d.toLocaleDateString('en-CA');
+  const today = new Date(), yesterday = new Date(Date.now() - 864e5);
+  const fmt = iso => new Date(iso + 'T12:00:00').toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'});
+  const weekday = iso => new Date(iso + 'T12:00:00').toLocaleDateString(undefined, {weekday: 'long'});
+
+  const row = (t, g) => `<div class="row ${g.final && !t.winner ? 'lost' : ''}">
       <span class="t">${esc(t.short || t.abbr)}<small>${esc(t.record || '')}</small></span>
       <span class="o ${PLAYERS.includes(t.owner) ? '' : 'none'}" style="--c:${color(t.owner)}">${esc(PLAYERS.includes(t.owner) ? t.owner : 'No one')}</span>
       <span class="p tab">${t.score ?? ''}</span></div>`;
-  el.innerHTML = `<h3>Last night<small>${esc(day)}</small></h3><div class="games">` +
-    night.games.map(g => `<div class="game">${row(g.away, g.final)}${row(g.home, g.final)}${g.final ? '' : `<p class="status">${esc(g.status)}</p>`}</div>`).join('') + '</div>';
+  const matchup = g => {
+    const a = g.away.owner, h = g.home.owner;
+    return PLAYERS.includes(a) && PLAYERS.includes(h) ? `<b>${esc(a)} vs. ${esc(h)}</b>` : '';
+  };
+  const tip = g => new Date(g.start).toLocaleTimeString(undefined, {hour: 'numeric', minute: '2-digit', timeZoneName: 'short'});
+
+  // Last night: final scores
+  let lastPane = '<p class="empty">No games were played.</p>';
+  if (night && night.games.length)
+    lastPane = '<div class="games">' + night.games.map(g =>
+      `<div class="game">${row(g.away, g)}${row(g.home, g)}${g.final ? '' : `<p class="status">${esc(g.status)}</p>`}</div>`).join('') + '</div>';
+
+  // Tonight: the morning's schedule, with tip times and head-to-head matchups
+  let tonightPane = '<p class="empty">No games tonight.</p>';
+  if (FINAL) tonightPane = '<p class="empty">The regular season is over.</p>';
+  else if (tonight && tonight.games.length) {
+    const h2h = tonight.games.filter(g => PLAYERS.includes(g.away.owner) && PLAYERS.includes(g.home.owner)).length;
+    tonightPane = `<p class="note">${tonight.games.length} game${tonight.games.length === 1 ? '' : 's'}, first tip at ${tip(tonight.games[0])}` +
+      `${h2h ? `; ${h2h} head-to-head` : ''}. Scores land here tomorrow morning.</p><div class="games">` +
+      tonight.games.map(g => `<div class="game"><div class="meta"><span>${tip(g)}</span>${matchup(g)}</div>${row(g.away, g)}${row(g.home, g)}</div>`).join('') + '</div>';
+  }
+
+  const tabs = [
+    {label: night && night.date === localISO(yesterday) ? 'Last night' : (night ? weekday(night.date) : 'Last night'), date: night ? fmt(night.date) : ''},
+    {label: tonight && tonight.date === localISO(today) ? 'Tonight' : (tonight ? weekday(tonight.date) : 'Tonight'), date: tonight ? fmt(tonight.date) : ''},
+  ];
+  el.innerHTML = `<h3>Games</h3>
+    <div class="seg" role="tablist" aria-label="Games">${tabs.map((t, i) =>
+      `<button role="tab" id="gtab-${i}" aria-controls="gpane-${i}" aria-selected="${i === 0}"><b>${esc(t.label)}</b><small>${esc(t.date)}</small></button>`).join('')}</div>
+    <div class="panes" id="panes">
+      <div class="pane" id="gpane-0" role="tabpanel" aria-labelledby="gtab-0">${lastPane}</div>
+      <div class="pane" id="gpane-1" role="tabpanel" aria-labelledby="gtab-1">${tonightPane}</div>
+    </div>`;
+
+  // Swipe between panes, or tap the toggle; the box resizes to whichever pane is showing.
+  const panes = document.getElementById('panes'), paneEls = [...panes.children];
+  const buttons = [...el.querySelectorAll('.seg button')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  buttons.forEach((b, i) => b.addEventListener('click', () =>
+    panes.scrollTo({left: paneEls[i].offsetLeft - paneEls[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth'})));
+  let ticking = false;
+  const sync = () => {
+    ticking = false;
+    const i = Math.round(panes.scrollLeft / Math.max(panes.clientWidth, 1));
+    buttons.forEach((b, k) => b.setAttribute('aria-selected', k === i));
+    panes.style.height = paneEls[i].offsetHeight + 'px';
+  };
+  panes.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(sync); } }, {passive: true});
+  addEventListener('resize', sync);
+  sync();
 }
 
 function race(hist) {
