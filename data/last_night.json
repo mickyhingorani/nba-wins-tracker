@@ -1,6 +1,6 @@
 {
   "date": "2026-10-25",
-  "updated": "2026-10-26T16:17:55+00:00",
+  "updated": "2026-10-26T17:01:58+00:00",
   "games": [
     {
       "start": "2026-10-25T21:00Z",
@@ -9,20 +9,26 @@
       "away": {
         "abbr": "LAL",
         "name": "Los Angeles Lakers",
+        "short": "Lakers",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lal.png",
         "score": 132,
         "winner": true,
         "record": "3-0",
-        "owner": "Ryall"
+        "owner": "Ryall",
+        "color": "#552583",
+        "alt": "#fdb927"
       },
       "home": {
         "abbr": "UTAH",
         "name": "Utah Jazz",
+        "short": "Jazz",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/utah.png",
         "score": 123,
         "winner": false,
         "record": "1-2",
-        "owner": "Ryall"
+        "owner": "Ryall",
+        "color": "#4e008e",
+        "alt": "#79a3dc"
       }
     },
     {
@@ -32,20 +38,26 @@
       "away": {
         "abbr": "IND",
         "name": "Indiana Pacers",
+        "short": "Pacers",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/ind.png",
         "score": 136,
         "winner": true,
         "record": "2-1",
-        "owner": "Micky"
+        "owner": "Micky",
+        "color": "#0c2340",
+        "alt": "#ffd520"
       },
       "home": {
         "abbr": "BKN",
         "name": "Brooklyn Nets",
+        "short": "Nets",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/bkn.png",
         "score": 109,
         "winner": false,
         "record": "0-3",
-        "owner": "Ryall"
+        "owner": "Ryall",
+        "color": "#000000",
+        "alt": "#ffffff"
       }
     },
     {
@@ -55,20 +67,26 @@
       "away": {
         "abbr": "ORL",
         "name": "Orlando Magic",
+        "short": "Magic",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/orl.png",
         "score": 111,
         "winner": true,
         "record": "1-2",
-        "owner": "Micky"
+        "owner": "Micky",
+        "color": "#0150b5",
+        "alt": "#9ca0a3"
       },
       "home": {
         "abbr": "NY",
         "name": "New York Knicks",
+        "short": "Knicks",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/ny.png",
         "score": 102,
         "winner": false,
         "record": "0-3",
-        "owner": "Pete"
+        "owner": "Pete",
+        "color": "#1d428a",
+        "alt": "#f58426"
       }
     },
     {
@@ -78,20 +96,26 @@
       "away": {
         "abbr": "TOR",
         "name": "Toronto Raptors",
+        "short": "Raptors",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/tor.png",
         "score": 94,
         "winner": false,
         "record": "2-1",
-        "owner": "Ryall"
+        "owner": "Ryall",
+        "color": "#d91244",
+        "alt": "#000000"
       },
       "home": {
         "abbr": "MIN",
         "name": "Minnesota Timberwolves",
+        "short": "Timberwolves",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/min.png",
         "score": 117,
         "winner": true,
         "record": "3-0",
-        "owner": "Pete"
+        "owner": "Pete",
+        "color": "#266092",
+        "alt": "#79bc43"
       }
     },
     {
@@ -101,20 +125,26 @@
       "away": {
         "abbr": "LAC",
         "name": "LA Clippers",
+        "short": "Clippers",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lac.png",
         "score": 101,
         "winner": false,
         "record": "1-2",
-        "owner": "Pete"
+        "owner": "Pete",
+        "color": "#12173f",
+        "alt": "#c8102e"
       },
       "home": {
         "abbr": "OKC",
         "name": "Oklahoma City Thunder",
+        "short": "Thunder",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/okc.png",
         "score": 108,
         "winner": true,
         "record": "3-0",
-        "owner": "Pablo"
+        "owner": "Pablo",
+        "color": "#007ac1",
+        "alt": "#ef3b24"
       }
     },
     {
@@ -124,20 +154,26 @@
       "away": {
         "abbr": "DET",
         "name": "Detroit Pistons",
+        "short": "Pistons",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/det.png",
         "score": 106,
         "winner": true,
         "record": "3-0",
-        "owner": "Pete"
+        "owner": "Pete",
+        "color": "#1d428a",
+        "alt": "#c8102e"
       },
       "home": {
         "abbr": "PHI",
         "name": "Philadelphia 76ers",
+        "short": "76ers",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/phi.png",
         "score": 93,
         "winner": false,
         "record": "3-1",
-        "owner": "Micky"
+        "owner": "Micky",
+        "color": "#1d428a",
+        "alt": "#e01234"
       }
     },
     {
@@ -147,20 +183,26 @@
       "away": {
         "abbr": "MEM",
         "name": "Memphis Grizzlies",
+        "short": "Grizzlies",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mem.png",
         "score": 123,
         "winner": true,
         "record": "3-0",
-        "owner": "Pablo"
+        "owner": "Pablo",
+        "color": "#5d76a9",
+        "alt": "#12173f"
       },
       "home": {
         "abbr": "SAC",
         "name": "Sacramento Kings",
+        "short": "Kings",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/sac.png",
         "score": 112,
         "winner": false,
         "record": "0-3",
-        "owner": "Unpicked"
+        "owner": "Unpicked",
+        "color": "#5a2d81",
+        "alt": "#6a7a82"
       }
     }
   ],

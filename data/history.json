@@ -1,0 +1,53 @@
+{
+  "days": {
+    "2026-10-20": {
+      "Pablo": 1,
+      "Micky": 1,
+      "Ryall": 0,
+      "Pete": 1,
+      "Unpicked": 0
+    },
+    "2026-10-21": {
+      "Pablo": 4,
+      "Micky": 2,
+      "Ryall": 2,
+      "Pete": 3,
+      "Unpicked": 0
+    },
+    "2026-10-22": {
+      "Pablo": 1,
+      "Micky": 1,
+      "Ryall": 0,
+      "Pete": 0,
+      "Unpicked": 0
+    },
+    "2026-10-23": {
+      "Pablo": 3,
+      "Micky": 1,
+      "Ryall": 4,
+      "Pete": 4,
+      "Unpicked": 0
+    },
+    "2026-10-24": {
+      "Pablo": 3,
+      "Micky": 3,
+      "Ryall": 1,
+      "Pete": 1,
+      "Unpicked": 0
+    },
+    "2026-10-25": {
+      "Pablo": 2,
+      "Micky": 2,
+      "Ryall": 1,
+      "Pete": 2,
+      "Unpicked": 0
+    }
+  },
+  "players": [
+    "Pablo",
+    "Micky",
+    "Ryall",
+    "Pete",
+    "Unpicked"
+  ]
+}
