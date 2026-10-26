@@ -269,14 +269,20 @@ function cards(players, hist, night) {
     const card = document.getElementById('card-' + b.dataset.i);
     deck.scrollTo({left: card.offsetLeft - (deck.clientWidth - card.clientWidth) / 2, behavior: reduce ? 'auto' : 'smooth'});
   }));
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.intersectionRatio > 0.6) {
-      const i = +e.target.id.split('-')[1];
-      buttons.forEach((b, k) => b.setAttribute('aria-current', k === i));
-      [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
-    }
-  }), {root: deck, threshold: 0.6});
-  deck.querySelectorAll('.card').forEach(c => io.observe(c));
+  // Highlight whichever card sits closest to the middle of the deck.
+  const cardEls = [...deck.querySelectorAll('.card')];
+  let ticking = false;
+  const sync = () => {
+    ticking = false;
+    const mid = deck.scrollLeft + deck.clientWidth / 2;
+    let i = 0, best = Infinity;
+    cardEls.forEach((c, k) => { const d = Math.abs(c.offsetLeft + c.clientWidth / 2 - mid); if (d < best) { best = d; i = k; } });
+    buttons.forEach((b, k) => b.setAttribute('aria-current', k === i));
+    [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
+  };
+  deck.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(sync); } }, {passive: true});
+  addEventListener('resize', sync);
+  sync();
 }
 
 function lastNight(night) {
