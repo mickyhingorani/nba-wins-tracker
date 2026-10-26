@@ -7,5 +7,14 @@
     "Ryall": ["DEN", "BOS", "TOR", "LAL", "GS", "UTAH", "BKN"],
     "Pete":  ["NY", "DET", "CLE", "MIN", "POR", "CHI", "LAC"]
   },
-  "unpicked": ["MIL", "SAC"]
+  "unpicked": ["MIL", "SAC"],
+  "preseason_win_totals_source": "DraftKings preseason over/under lines, via Sports Illustrated, Oct 15, 2026",
+  "preseason_win_totals": {
+    "OKC": 62.5, "SA": 60.5, "NY": 52.5, "BOS": 51.5, "PHI": 50.5,
+    "DET": 48.5, "DEN": 48.5, "MIN": 47.5, "HOU": 47.5, "CLE": 47.5,
+    "TOR": 46.5, "MIA": 45.5, "LAL": 45.5, "IND": 44.5, "ORL": 43.5,
+    "ATL": 43.5, "POR": 41.5, "PHX": 39.5, "CHA": 38.5, "GS": 37.5,
+    "UTAH": 36.5, "WSH": 34.5, "DAL": 33.5, "MEM": 29.5, "CHI": 29.5,
+    "LAC": 28.5, "NO": 28.5, "MIL": 25.5, "BKN": 24.5, "SAC": 20.5
+  }
 }
