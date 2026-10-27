@@ -236,7 +236,16 @@ const ord = n => n + (['th','st','nd','rd'][(n % 100 - 20) % 10] || ['th','st','
 const fmtDay = iso => new Date(iso + 'T12:00:00').toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
 const half = n => String(n).replace('.5', '½');
 const signed = n => (Math.round(n) > 0 ? '+' : Math.round(n) < 0 ? '−' : '±') + Math.abs(Math.round(n));
-const gamesBack = (a, b) => ((a.wins - b.wins) + (b.losses - a.losses)) / 2;
+// The game is total wins, so 'back' is simply the gap in wins (not NBA-style games back).
+const winsBack = (a, b) => a.wins - b.wins;
+const winsLabel = n => `${n} win${n === 1 ? '' : 's'}`;
+// Place by wins, with ties shared: two players on 12 wins are both 'T-2nd'.
+let RANKED = [];
+const rankLabel = p => {
+  const rank = 1 + RANKED.filter(q => q.wins > p.wins).length;
+  const tied = RANKED.filter(q => q.wins === p.wins).length > 1;
+  return (tied ? 'T-' : '') + ord(rank);
+};
 
 // Projection: the team's real record so far, plus 20 games' worth of its preseason Vegas line,
 // projected over the games it has left. Early on the line dominates; by midseason the record does.
@@ -321,6 +330,7 @@ function headline(players, night) {
 function cards(players, hist, night) {
   const days = hist ? Object.keys(hist.days) : [];
   const lead = players[0];
+  RANKED = players;
   const maxW = Math.max(...players.map(q => q.wins), 1);
 
   document.getElementById('strip').innerHTML = players.map((p, i) =>
@@ -333,8 +343,8 @@ function cards(players, hist, night) {
   document.getElementById('deck').innerHTML = players.map((p, i) => {
     const next = players[1];
     const place = i === 0
-      ? (next && gamesBack(p, next) > 0 ? `${FINAL ? 'Champion, won' : '1st, leading'} by ${half(gamesBack(p, next))}` : '1st, tied')
-      : `${ord(i + 1)}, ${gamesBack(lead, p) ? half(gamesBack(lead, p)) + ' back' : 'tied'}`;
+      ? (next && winsBack(p, next) > 0 ? `${FINAL ? 'Champion, won' : '1st, leading'} by ${winsLabel(winsBack(p, next))}` : '1st, tied')
+      : (winsBack(lead, p) ? `${rankLabel(p)}, ${winsLabel(winsBack(lead, p))} back` : '1st, tied');
     const ranked = [...p.teams].sort((a, b) => b.diff - a.diff);
     const best = ranked[0], worst = ranked[ranked.length - 1];
     const last = night && night.games.length ? night.haul[p.name] : null;
