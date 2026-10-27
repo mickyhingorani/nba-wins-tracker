@@ -56,5 +56,133 @@
     "Ryall",
     "Pete",
     "Unpicked"
-  ]
+  ],
+  "h2h": {
+    "2026-10-20": {
+      "Ryall|Pete": [
+        0,
+        1
+      ],
+      "Micky|Pete": [
+        1,
+        0
+      ],
+      "Pablo|Micky": [
+        1,
+        0
+      ]
+    },
+    "2026-10-21": {
+      "Pablo|Micky": [
+        2,
+        0
+      ],
+      "Pablo|Pete": [
+        0,
+        2
+      ],
+      "Micky|Ryall": [
+        1,
+        0
+      ],
+      "Ryall|Pete": [
+        1,
+        0
+      ],
+      "Pablo|Ryall": [
+        1,
+        0
+      ]
+    },
+    "2026-10-22": {
+      "Micky|Pete": [
+        1,
+        0
+      ],
+      "Pablo|Ryall": [
+        1,
+        0
+      ]
+    },
+    "2026-10-23": {
+      "Ryall|Pete": [
+        2,
+        0
+      ],
+      "Pablo|Micky": [
+        2,
+        0
+      ],
+      "Micky|Pete": [
+        0,
+        1
+      ],
+      "Pablo|Ryall": [
+        1,
+        1
+      ],
+      "Pablo|Pete": [
+        0,
+        1
+      ],
+      "Micky|Ryall": [
+        0,
+        1
+      ]
+    },
+    "2026-10-24": {
+      "Pablo|Micky": [
+        0,
+        1
+      ],
+      "Ryall|Pete": [
+        0,
+        1
+      ],
+      "Pablo|Pete": [
+        1,
+        0
+      ],
+      "Micky|Ryall": [
+        0,
+        1
+      ],
+      "Pablo|Ryall": [
+        1,
+        0
+      ]
+    },
+    "2026-10-25": {
+      "Micky|Ryall": [
+        1,
+        0
+      ],
+      "Micky|Pete": [
+        1,
+        1
+      ],
+      "Ryall|Pete": [
+        0,
+        1
+      ],
+      "Pablo|Pete": [
+        1,
+        0
+      ]
+    },
+    "2026-10-26": {
+      "Pablo|Micky": [
+        0,
+        2
+      ],
+      "Ryall|Pete": [
+        1,
+        0
+      ],
+      "Pablo|Ryall": [
+        1,
+        0
+      ]
+    }
+  }
 }
