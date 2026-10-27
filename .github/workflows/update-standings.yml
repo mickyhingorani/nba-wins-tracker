@@ -2,13 +2,10 @@ name: Update NBA standings
 
 on:
   schedule:
-    # Times are UTC. Odd minutes dodge GitHub's busy top-of-hour queue.
-    # Main run: 4:37am Eastern (3:37am after clocks fall back), after
-    # West Coast games and overtimes are final.
-    - cron: "37 8 * * *"
-    # Safety run: 6:43am Eastern (5:43am in winter), in case the first
-    # run was delayed or a late game wasn't final yet.
-    - cron: "43 10 * * *"
+    # GitHub's scheduler is best effort: runs can be late or skipped. So try every hour
+    # through the morning. Extra runs are harmless; nothing is committed unless data changed.
+    # Times are UTC: 7:37-15:37 UTC = 3:37-11:37am EDT (2:37-10:37am EST in winter).
+    - cron: "37 7-15 * * *"
   workflow_dispatch: # adds a "Run workflow" button on the Actions tab
 
 permissions:
