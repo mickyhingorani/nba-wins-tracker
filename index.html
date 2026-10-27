@@ -131,12 +131,15 @@
   .seg button[aria-selected="true"] { background: var(--text); color: var(--ink); }
   .seg b { display: block; font: 800 18px/1.1 var(--face); font-stretch: 80%; }
   .seg small { font-size: 12px; opacity: 0.75; }
-  .panes { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 16px; align-items: start;
-           overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; transition: height 0.2s; }
-  .panes::-webkit-scrollbar { display: none; }
-  .pane { scroll-snap-align: start; min-width: 0; }
+  /* One day shows at a time; the page grows or shrinks to fit it, so vertical scrolling is never trapped. */
+  .panes { touch-action: pan-y; }
+  .pane[hidden] { display: none; }
+  .pane.in-right { animation: in-right 0.22s ease-out; }
+  .pane.in-left { animation: in-left 0.22s ease-out; }
+  @keyframes in-right { from { opacity: 0; transform: translateX(28px); } }
+  @keyframes in-left { from { opacity: 0; transform: translateX(-28px); } }
   .meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding: 7px 0 1px; }
-  @media (prefers-reduced-motion: reduce) { .panes { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .pane.in-right, .pane.in-left { animation: none; } }
 
   .race { background: var(--raise); border-radius: 16px; padding: 12px 8px 6px; position: relative; overflow: hidden; }
   .race svg { display: block; width: 100%; height: auto; overflow: visible; position: relative; }
@@ -407,25 +410,34 @@ function games(night, tonight) {
       `<button role="tab" id="gtab-${i}" aria-controls="gpane-${i}" aria-selected="${i === 0}"><b>${esc(t.label)}</b><small>${esc(t.date)}</small></button>`).join('')}</div>
     <div class="panes" id="panes">
       <div class="pane" id="gpane-0" role="tabpanel" aria-labelledby="gtab-0">${lastPane}</div>
-      <div class="pane" id="gpane-1" role="tabpanel" aria-labelledby="gtab-1">${tonightPane}</div>
+      <div class="pane" id="gpane-1" role="tabpanel" aria-labelledby="gtab-1" hidden>${tonightPane}</div>
     </div>`;
 
-  // Swipe between panes, or tap the toggle; the box resizes to whichever pane is showing.
+  // Tap a button or swipe sideways on the list to switch days. Vertical swipes are left to the page.
   const panes = document.getElementById('panes'), paneEls = [...panes.children];
   const buttons = [...el.querySelectorAll('.seg button')];
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  buttons.forEach((b, i) => b.addEventListener('click', () =>
-    panes.scrollTo({left: paneEls[i].offsetLeft - paneEls[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth'})));
-  let ticking = false;
-  const sync = () => {
-    ticking = false;
-    const i = Math.round(panes.scrollLeft / Math.max(panes.clientWidth, 1));
+  let current = 0;
+  const show = i => {
+    if (i === current || i < 0 || i >= paneEls.length) return;
+    const dir = i > current ? 'in-right' : 'in-left';
+    paneEls.forEach((p, k) => { p.hidden = k !== i; p.classList.remove('in-right', 'in-left'); });
+    void paneEls[i].offsetWidth; // restart the slide-in
+    paneEls[i].classList.add(dir);
     buttons.forEach((b, k) => b.setAttribute('aria-selected', k === i));
-    panes.style.height = paneEls[i].offsetHeight + 'px';
+    // If switching shrank the list above the fold, keep the buttons in view.
+    const top = el.getBoundingClientRect().top;
+    if (top < 0) scrollBy(0, top - 8);
+    current = i;
   };
-  panes.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(sync); } }, {passive: true});
-  addEventListener('resize', sync);
-  sync();
+  buttons.forEach((b, i) => b.addEventListener('click', () => show(i)));
+  let x0 = null, y0 = null;
+  panes.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive: true});
+  panes.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > 1.5 * Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+  }, {passive: true});
 }
 
 function race(hist) {
