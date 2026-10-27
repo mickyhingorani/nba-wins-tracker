@@ -161,6 +161,19 @@ def parse_scoreboard(espn, owners, teams):
     return games
 
 
+def head_to_head(games, players):
+    """Games where two different people's teams met: {"A|B": [A's wins, B's wins]}, names in picks order."""
+    out = {}
+    for g in games:
+        a, h = g["away"], g["home"]
+        if not g["final"] or a["owner"] == h["owner"] or a["owner"] not in players or h["owner"] not in players:
+            continue
+        x, y = sorted((a, h), key=lambda t: players.index(t["owner"]))
+        rec = out.setdefault(f'{x["owner"]}|{y["owner"]}', [0, 0])
+        rec[0 if x["winner"] else 1] += 1
+    return out
+
+
 def tally(games, names):
     out = {n: {"wins": 0, "losses": 0} for n in names}
     for g in games:
@@ -201,6 +214,8 @@ def main():
 
     history = read_json(DATA_DIR / "history.json", {"days": {}})
     days = history.setdefault("days", {})
+    h2h_days = history.setdefault("h2h", {})
+    player_names = list(picks["players"])
 
     # Season over: once the last regular-season night is recorded and standings are marked
     # final, leave everything exactly as it is.
@@ -218,14 +233,17 @@ def main():
     d = start
     while d <= night:
         key = d.isoformat()
-        if key not in days or d == night:
+        # Re-fetch a day if it's new, if it's last night, or if it predates head-to-head tracking.
+        if key not in days or key not in h2h_days or d == night:
             games = parse_scoreboard(src.scoreboard(d), owners, teams)
             if d == night:
                 last_night_games = games
             if all(g["final"] for g in games):  # only store a day once it's complete
                 days[key] = {n: t["wins"] for n, t in tally(games, names).items()}
+                h2h_days[key] = head_to_head(games, player_names)
         d += timedelta(days=1)
     history["days"] = dict(sorted(days.items()))
+    history["h2h"] = dict(sorted(h2h_days.items()))
     history["players"] = names
 
     # --- Season standings ---

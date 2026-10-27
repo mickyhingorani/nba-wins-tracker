@@ -112,6 +112,25 @@
   .dots i { width: 6px; height: 6px; border-radius: 3px; background: var(--line); transition: width 0.2s, background 0.2s; }
   .dots i.on { width: 18px; background: var(--text); }
 
+  /* Head-to-head toggle under the cards */
+  .h2h { margin-top: 14px; background: var(--raise); border-radius: 14px; }
+  .h2h summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
+  .h2h summary::-webkit-details-marker { display: none; }
+  .h2h summary:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; border-radius: 14px; }
+  .h2h summary svg { width: 44px; height: 28px; flex: none; }
+  .h2h summary .label { flex: 1; font: 800 20px/1 var(--face); font-stretch: 78%; }
+  .h2h summary .label small { display: block; font: 400 13px var(--face); color: var(--muted); margin-top: 3px; }
+  .h2h summary .chev { color: var(--muted); font-size: 20px; line-height: 1; transition: transform 0.15s; }
+  .h2h[open] summary .chev { transform: rotate(90deg); }
+  .h2h ul { list-style: none; margin: 0; padding: 0 14px 10px; }
+  .h2h li { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .h2h .pl { font-size: 14px; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: var(--c); color: var(--ink); justify-self: start; }
+  .h2h .pl.r { justify-self: end; }
+  .h2h .pl.trail { background: transparent; color: var(--c); box-shadow: inset 0 0 0 1.5px var(--c); }
+  .h2h .rec { font: 800 22px/1 var(--face); font-stretch: 78%; text-align: center; min-width: 64px; }
+  .h2h .rec small { display: block; font: 400 11px var(--face); color: var(--muted); margin-top: 3px; }
+  @media (prefers-reduced-motion: reduce) { .h2h summary .chev { transition: none; } }
+
   /* Sections below the deck */
   h3 { margin: 34px 0 12px; font: 800 24px/1 var(--face); font-stretch: 75%; }
   h3 small { font: 400 14px var(--face); color: var(--muted); margin-left: 6px; }
@@ -202,6 +221,7 @@
 </div>
 <div class="deck" id="deck"></div>
 <div class="dots" id="dots" aria-hidden="true"></div>
+<div class="wrap" id="h2h-wrap"></div>
 <footer class="wrap">
   <section id="games"></section>
   <section id="race-wrap"></section>
@@ -264,6 +284,7 @@ Promise.all([get('data/standings.json'), get('data/history.json'), get('data/las
 
   headline(players, night);
   cards(players, hist, night);
+  headToHead(hist);
   games(night, tonight);
   race(hist);
   report(players);
@@ -367,6 +388,38 @@ function cards(players, hist, night) {
   deck.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(sync); } }, {passive: true});
   addEventListener('resize', sync);
   sync();
+}
+
+function headToHead(hist) {
+  const days = hist && hist.h2h ? Object.values(hist.h2h) : [];
+  const total = {};
+  for (const day of days) for (const [k, [a, b]] of Object.entries(day)) {
+    const t = total[k] || (total[k] = [0, 0]); t[0] += a; t[1] += b;
+  }
+  const pairs = [];
+  for (let i = 0; i < PLAYERS.length; i++) for (let j = i + 1; j < PLAYERS.length; j++) {
+    const [a, b] = [PLAYERS[i], PLAYERS[j]];
+    const t = total[`${a}|${b}`] || (total[`${b}|${a}`] ? [...total[`${b}|${a}`]].reverse() : [0, 0]);
+    pairs.push({a, b, wa: t[0], wb: t[1]});
+  }
+  if (!pairs.some(p => p.wa + p.wb)) return;
+  const icon = `<svg viewBox="0 0 64 40" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 12 L15.5 22"/><path d="M15.5 22 L21 27.5 L21.5 35"/><path d="M15.5 22 L11.5 28.5 L7 33"/>
+      <path d="M19.5 13.5 L24.5 17.5 L26 21.5"/><path d="M19.5 13.5 L13.5 16.5"/>
+      <path d="M45.5 12.5 L46.5 23"/><path d="M46.5 23 L40.5 28.5 L39.5 35"/><path d="M46.5 23 L52.5 28.5 L54.5 35"/>
+      <path d="M45.5 14.5 L39 15 L34.5 12"/><path d="M45.5 14.5 L52 17.5 L57 16"/>
+    </g>
+    <circle cx="21.2" cy="7" r="3.7" fill="currentColor"/><circle cx="45" cy="7.5" r="3.7" fill="currentColor"/>
+    <circle cx="27" cy="28" r="3.3" fill="#F07A2A"/></svg>`;
+  const pill = (name, side, trailing) => `<span class="pl ${side} ${trailing ? 'trail' : ''}" style="--c:${color(name)}">${esc(name)}</span>`;
+  const rows = pairs.map(p => {
+    const n = p.wa + p.wb;
+    return `<li>${pill(p.a, '', p.wa < p.wb)}<span class="rec tab">${p.wa}–${p.wb}<small>${n ? `${n} game${n === 1 ? '' : 's'}` : 'Not yet'}</small></span>${pill(p.b, 'r', p.wb < p.wa)}</li>`;
+  }).join('');
+  document.getElementById('h2h-wrap').innerHTML = `<details class="h2h">
+    <summary>${icon}<span class="label">Head to head<small>When your teams play each other</small></span><span class="chev" aria-hidden="true">›</span></summary>
+    <ul>${rows}</ul></details>`;
 }
 
 function games(night, tonight) {
