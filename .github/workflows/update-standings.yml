@@ -2,10 +2,9 @@ name: Update NBA standings
 
 on:
   schedule:
-    # GitHub's scheduler is best effort: runs can be late or skipped. So try every hour
-    # through the morning. Extra runs are harmless; nothing is committed unless data changed.
-    # Times are UTC: 7:37-15:37 UTC = 3:37-11:37am EDT (2:37-10:37am EST in winter).
-    - cron: "37 7-15 * * *"
+    # Backup only. The daily update is started by cron-job.org at 4:40am Eastern.
+    # 10:37 UTC = 6:37am EDT (5:37am EST in winter). GitHub's scheduler can run late or skip.
+    - cron: "37 10 * * *"
   workflow_dispatch: # adds a "Run workflow" button on the Actions tab
 
 permissions:
