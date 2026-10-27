@@ -131,15 +131,9 @@
   .seg button[aria-selected="true"] { background: var(--text); color: var(--ink); }
   .seg b { display: block; font: 800 18px/1.1 var(--face); font-stretch: 80%; }
   .seg small { font-size: 12px; opacity: 0.75; }
-  /* One day shows at a time; the page grows or shrinks to fit it, so vertical scrolling is never trapped. */
-  .panes { touch-action: pan-y; }
+  /* Tabs: one day shows at a time and the page grows or shrinks to fit it. */
   .pane[hidden] { display: none; }
-  .pane.in-right { animation: in-right 0.22s ease-out; }
-  .pane.in-left { animation: in-left 0.22s ease-out; }
-  @keyframes in-right { from { opacity: 0; transform: translateX(28px); } }
-  @keyframes in-left { from { opacity: 0; transform: translateX(-28px); } }
   .meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding: 7px 0 1px; }
-  @media (prefers-reduced-motion: reduce) { .pane.in-right, .pane.in-left { animation: none; } }
 
   .race { background: var(--raise); border-radius: 16px; padding: 12px 8px 6px; position: relative; overflow: hidden; }
   .race svg { display: block; width: 100%; height: auto; overflow: visible; position: relative; }
@@ -413,31 +407,16 @@ function games(night, tonight) {
       <div class="pane" id="gpane-1" role="tabpanel" aria-labelledby="gtab-1" hidden>${tonightPane}</div>
     </div>`;
 
-  // Tap a button or swipe sideways on the list to switch days. Vertical swipes are left to the page.
-  const panes = document.getElementById('panes'), paneEls = [...panes.children];
+  // Tap a tab to switch days.
+  const paneEls = [...document.getElementById('panes').children];
   const buttons = [...el.querySelectorAll('.seg button')];
-  let current = 0;
-  const show = i => {
-    if (i === current || i < 0 || i >= paneEls.length) return;
-    const dir = i > current ? 'in-right' : 'in-left';
-    paneEls.forEach((p, k) => { p.hidden = k !== i; p.classList.remove('in-right', 'in-left'); });
-    void paneEls[i].offsetWidth; // restart the slide-in
-    paneEls[i].classList.add(dir);
-    buttons.forEach((b, k) => b.setAttribute('aria-selected', k === i));
-    // If switching shrank the list above the fold, keep the buttons in view.
+  buttons.forEach((b, i) => b.addEventListener('click', () => {
+    paneEls.forEach((p, k) => { p.hidden = k !== i; });
+    buttons.forEach((t, k) => t.setAttribute('aria-selected', k === i));
+    // If the new list is shorter and the tabs slid off screen, bring them back into view.
     const top = el.getBoundingClientRect().top;
     if (top < 0) scrollBy(0, top - 8);
-    current = i;
-  };
-  buttons.forEach((b, i) => b.addEventListener('click', () => show(i)));
-  let x0 = null, y0 = null;
-  panes.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive: true});
-  panes.addEventListener('touchend', e => {
-    if (x0 === null) return;
-    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
-    x0 = null;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > 1.5 * Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
-  }, {passive: true});
+  }));
 }
 
 function race(hist) {
