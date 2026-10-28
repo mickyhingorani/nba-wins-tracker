@@ -1,6 +1,6 @@
 {
   "season": "2026-27",
-  "updated": "2026-10-27T16:49:54+00:00",
+  "updated": "2026-10-28T08:40:11+00:00",
   "final": false,
   "players": [
     {
@@ -82,16 +82,26 @@
     },
     {
       "name": "Pete",
-      "wins": 12,
-      "losses": 10,
+      "wins": 14,
+      "losses": 11,
       "teams": [
+        {
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "short": "Trail Blazers",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/por.png",
+          "wins": 3,
+          "losses": 0,
+          "color": "#e03a3e",
+          "alt": "#000000"
+        },
         {
           "abbr": "DET",
           "name": "Detroit Pistons",
           "short": "Pistons",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/det.png",
           "wins": 3,
-          "losses": 0,
+          "losses": 1,
           "color": "#1d428a",
           "alt": "#c8102e"
         },
@@ -104,16 +114,6 @@
           "losses": 1,
           "color": "#266092",
           "alt": "#79bc43"
-        },
-        {
-          "abbr": "POR",
-          "name": "Portland Trail Blazers",
-          "short": "Trail Blazers",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/por.png",
-          "wins": 2,
-          "losses": 0,
-          "color": "#e03a3e",
-          "alt": "#000000"
         },
         {
           "abbr": "CLE",
@@ -136,6 +136,16 @@
           "alt": "#c8102e"
         },
         {
+          "abbr": "NY",
+          "name": "New York Knicks",
+          "short": "Knicks",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/ny.png",
+          "wins": 1,
+          "losses": 3,
+          "color": "#1d428a",
+          "alt": "#f58426"
+        },
+        {
           "abbr": "CHI",
           "name": "Chicago Bulls",
           "short": "Bulls",
@@ -144,22 +154,12 @@
           "losses": 3,
           "color": "#ce1141",
           "alt": "#000000"
-        },
-        {
-          "abbr": "NY",
-          "name": "New York Knicks",
-          "short": "Knicks",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/ny.png",
-          "wins": 0,
-          "losses": 3,
-          "color": "#1d428a",
-          "alt": "#f58426"
         }
       ]
     },
     {
       "name": "Micky",
-      "wins": 12,
+      "wins": 13,
       "losses": 13,
       "teams": [
         {
@@ -183,6 +183,16 @@
           "alt": "#1d1060"
         },
         {
+          "abbr": "SA",
+          "name": "San Antonio Spurs",
+          "short": "Spurs",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sa.png",
+          "wins": 2,
+          "losses": 2,
+          "color": "#000000",
+          "alt": "#c4ced4"
+        },
+        {
           "abbr": "IND",
           "name": "Indiana Pacers",
           "short": "Pacers",
@@ -201,16 +211,6 @@
           "losses": 2,
           "color": "#0064b1",
           "alt": "#bbc4ca"
-        },
-        {
-          "abbr": "SA",
-          "name": "San Antonio Spurs",
-          "short": "Spurs",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sa.png",
-          "wins": 1,
-          "losses": 2,
-          "color": "#000000",
-          "alt": "#c4ced4"
         },
         {
           "abbr": "ORL",
@@ -236,28 +236,28 @@
     },
     {
       "name": "Ryall",
-      "wins": 10,
-      "losses": 13,
+      "wins": 11,
+      "losses": 15,
       "teams": [
+        {
+          "abbr": "BOS",
+          "name": "Boston Celtics",
+          "short": "Celtics",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
+          "wins": 3,
+          "losses": 1,
+          "color": "#008348",
+          "alt": "#ffffff"
+        },
         {
           "abbr": "LAL",
           "name": "Los Angeles Lakers",
           "short": "Lakers",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/lal.png",
           "wins": 3,
-          "losses": 0,
+          "losses": 1,
           "color": "#552583",
           "alt": "#fdb927"
-        },
-        {
-          "abbr": "BOS",
-          "name": "Boston Celtics",
-          "short": "Celtics",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
-          "wins": 2,
-          "losses": 1,
-          "color": "#008348",
-          "alt": "#ffffff"
         },
         {
           "abbr": "TOR",
@@ -305,7 +305,7 @@
           "short": "Nets",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/bkn.png",
           "wins": 0,
-          "losses": 3,
+          "losses": 4,
           "color": "#000000",
           "alt": "#ffffff"
         }
@@ -314,7 +314,7 @@
   ],
   "unpicked": {
     "wins": 1,
-    "losses": 6,
+    "losses": 7,
     "teams": [
       {
         "abbr": "MIL",
@@ -332,7 +332,7 @@
         "short": "Kings",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sac.png",
         "wins": 0,
-        "losses": 3,
+        "losses": 4,
         "color": "#5a2d81",
         "alt": "#6a7a82"
       }
