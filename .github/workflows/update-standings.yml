@@ -28,5 +28,14 @@ jobs:
             echo "No changes."
           else
             git commit -m "Update standings $(date -u +%Y-%m-%d)"
-            git pull --rebase && git push
+            # GitHub occasionally returns a transient 5xx on push; retry before giving up.
+            for i in 1 2 3; do
+              if git pull --rebase && git push; then
+                exit 0
+              fi
+              echo "Push failed (attempt $i of 3), retrying..."
+              sleep $((i * 10))
+            done
+            echo "Push failed after 3 attempts."
+            exit 1
           fi
