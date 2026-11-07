@@ -1,13 +1,23 @@
 {
   "season": "2026-27",
-  "updated": "2026-11-06T17:40:08+00:00",
+  "updated": "2026-11-07T09:40:09+00:00",
   "final": false,
   "players": [
     {
       "name": "Pablo",
-      "wins": 33,
-      "losses": 25,
+      "wins": 35,
+      "losses": 27,
       "teams": [
+        {
+          "abbr": "OKC",
+          "name": "Oklahoma City Thunder",
+          "short": "Thunder",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/okc.png",
+          "wins": 7,
+          "losses": 2,
+          "color": "#007ac1",
+          "alt": "#ef3b24"
+        },
         {
           "abbr": "HOU",
           "name": "Houston Rockets",
@@ -19,22 +29,12 @@
           "alt": "#000000"
         },
         {
-          "abbr": "OKC",
-          "name": "Oklahoma City Thunder",
-          "short": "Thunder",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/okc.png",
-          "wins": 6,
-          "losses": 2,
-          "color": "#007ac1",
-          "alt": "#ef3b24"
-        },
-        {
           "abbr": "MEM",
           "name": "Memphis Grizzlies",
           "short": "Grizzlies",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/mem.png",
           "wins": 6,
-          "losses": 2,
+          "losses": 3,
           "color": "#5d76a9",
           "alt": "#12173f"
         },
@@ -43,7 +43,7 @@
           "name": "Atlanta Hawks",
           "short": "Hawks",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/atl.png",
-          "wins": 5,
+          "wins": 6,
           "losses": 4,
           "color": "#c8102e",
           "alt": "#fdb927"
@@ -54,7 +54,7 @@
           "short": "Wizards",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/wsh.png",
           "wins": 4,
-          "losses": 4,
+          "losses": 5,
           "color": "#e31837",
           "alt": "#002b5c"
         },
@@ -82,15 +82,15 @@
     },
     {
       "name": "Ryall",
-      "wins": 30,
-      "losses": 27,
+      "wins": 33,
+      "losses": 28,
       "teams": [
         {
           "abbr": "LAL",
           "name": "Los Angeles Lakers",
           "short": "Lakers",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/lal.png",
-          "wins": 7,
+          "wins": 8,
           "losses": 2,
           "color": "#552583",
           "alt": "#fdb927"
@@ -100,7 +100,7 @@
           "name": "Boston Celtics",
           "short": "Celtics",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
-          "wins": 6,
+          "wins": 7,
           "losses": 2,
           "color": "#008348",
           "alt": "#ffffff"
@@ -116,6 +116,16 @@
           "alt": "#1d428a"
         },
         {
+          "abbr": "TOR",
+          "name": "Toronto Raptors",
+          "short": "Raptors",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/tor.png",
+          "wins": 5,
+          "losses": 4,
+          "color": "#d91244",
+          "alt": "#000000"
+        },
+        {
           "abbr": "DEN",
           "name": "Denver Nuggets",
           "short": "Nuggets",
@@ -124,16 +134,6 @@
           "losses": 3,
           "color": "#0e2240",
           "alt": "#fec524"
-        },
-        {
-          "abbr": "TOR",
-          "name": "Toronto Raptors",
-          "short": "Raptors",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/tor.png",
-          "wins": 4,
-          "losses": 4,
-          "color": "#d91244",
-          "alt": "#000000"
         },
         {
           "abbr": "BKN",
@@ -151,7 +151,7 @@
           "short": "Jazz",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/utah.png",
           "wins": 1,
-          "losses": 7,
+          "losses": 8,
           "color": "#4e008e",
           "alt": "#79a3dc"
         }
@@ -159,8 +159,8 @@
     },
     {
       "name": "Micky",
-      "wins": 30,
-      "losses": 29,
+      "wins": 32,
+      "losses": 32,
       "teams": [
         {
           "abbr": "PHI",
@@ -168,7 +168,7 @@
           "short": "76ers",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/phi.png",
           "wins": 8,
-          "losses": 1,
+          "losses": 2,
           "color": "#1d428a",
           "alt": "#e01234"
         },
@@ -177,7 +177,7 @@
           "name": "San Antonio Spurs",
           "short": "Spurs",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sa.png",
-          "wins": 6,
+          "wins": 7,
           "losses": 2,
           "color": "#000000",
           "alt": "#c4ced4"
@@ -187,7 +187,7 @@
           "name": "Dallas Mavericks",
           "short": "Mavericks",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/dal.png",
-          "wins": 4,
+          "wins": 5,
           "losses": 4,
           "color": "#0064b1",
           "alt": "#bbc4ca"
@@ -198,7 +198,7 @@
           "short": "Pelicans",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/no.png",
           "wins": 4,
-          "losses": 4,
+          "losses": 5,
           "color": "#0a2240",
           "alt": "#b4975a"
         },
@@ -218,7 +218,7 @@
           "short": "Hornets",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/cha.png",
           "wins": 3,
-          "losses": 6,
+          "losses": 7,
           "color": "#008ca8",
           "alt": "#1d1060"
         },
@@ -236,18 +236,18 @@
     },
     {
       "name": "Pete",
-      "wins": 28,
-      "losses": 28,
+      "wins": 30,
+      "losses": 29,
       "teams": [
         {
-          "abbr": "POR",
-          "name": "Portland Trail Blazers",
-          "short": "Trail Blazers",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/por.png",
-          "wins": 6,
-          "losses": 1,
-          "color": "#e03a3e",
-          "alt": "#000000"
+          "abbr": "MIN",
+          "name": "Minnesota Timberwolves",
+          "short": "Timberwolves",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/min.png",
+          "wins": 7,
+          "losses": 3,
+          "color": "#266092",
+          "alt": "#79bc43"
         },
         {
           "abbr": "DET",
@@ -260,14 +260,24 @@
           "alt": "#c8102e"
         },
         {
-          "abbr": "MIN",
-          "name": "Minnesota Timberwolves",
-          "short": "Timberwolves",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/min.png",
+          "abbr": "POR",
+          "name": "Portland Trail Blazers",
+          "short": "Trail Blazers",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/por.png",
           "wins": 6,
-          "losses": 3,
-          "color": "#266092",
-          "alt": "#79bc43"
+          "losses": 2,
+          "color": "#e03a3e",
+          "alt": "#000000"
+        },
+        {
+          "abbr": "CLE",
+          "name": "Cleveland Cavaliers",
+          "short": "Cavaliers",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/cle.png",
+          "wins": 5,
+          "losses": 4,
+          "color": "#860038",
+          "alt": "#bc945c"
         },
         {
           "abbr": "NY",
@@ -278,16 +288,6 @@
           "losses": 4,
           "color": "#1d428a",
           "alt": "#f58426"
-        },
-        {
-          "abbr": "CLE",
-          "name": "Cleveland Cavaliers",
-          "short": "Cavaliers",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/cle.png",
-          "wins": 4,
-          "losses": 4,
-          "color": "#860038",
-          "alt": "#bc945c"
         },
         {
           "abbr": "CHI",
@@ -314,7 +314,7 @@
   ],
   "unpicked": {
     "wins": 2,
-    "losses": 14,
+    "losses": 16,
     "teams": [
       {
         "abbr": "MIL",
@@ -322,7 +322,7 @@
         "short": "Bucks",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/mil.png",
         "wins": 1,
-        "losses": 7,
+        "losses": 8,
         "color": "#00471b",
         "alt": "#eee1c6"
       },
@@ -332,7 +332,7 @@
         "short": "Kings",
         "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sac.png",
         "wins": 1,
-        "losses": 7,
+        "losses": 8,
         "color": "#5a2d81",
         "alt": "#6a7a82"
       }
