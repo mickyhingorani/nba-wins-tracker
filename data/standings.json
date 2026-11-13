@@ -1,12 +1,12 @@
 {
   "season": "2026-27",
-  "updated": "2026-11-12T18:34:42+00:00",
+  "updated": "2026-11-13T09:40:09+00:00",
   "final": false,
   "players": [
     {
       "name": "Pablo",
-      "wins": 44,
-      "losses": 36,
+      "wins": 45,
+      "losses": 37,
       "teams": [
         {
           "abbr": "HOU",
@@ -63,7 +63,7 @@
           "name": "Phoenix Suns",
           "short": "Suns",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/phx.png",
-          "wins": 4,
+          "wins": 5,
           "losses": 6,
           "color": "#29127a",
           "alt": "#e56020"
@@ -74,7 +74,7 @@
           "short": "Wizards",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/wsh.png",
           "wins": 4,
-          "losses": 8,
+          "losses": 9,
           "color": "#e31837",
           "alt": "#002b5c"
         }
@@ -83,7 +83,7 @@
     {
       "name": "Ryall",
       "wins": 44,
-      "losses": 37,
+      "losses": 38,
       "teams": [
         {
           "abbr": "LAL",
@@ -131,7 +131,7 @@
           "short": "Raptors",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/tor.png",
           "wins": 5,
-          "losses": 6,
+          "losses": 7,
           "color": "#d91244",
           "alt": "#000000"
         },
@@ -159,8 +159,8 @@
     },
     {
       "name": "Micky",
-      "wins": 42,
-      "losses": 39,
+      "wins": 43,
+      "losses": 41,
       "teams": [
         {
           "abbr": "SA",
@@ -177,7 +177,7 @@
           "name": "Philadelphia 76ers",
           "short": "76ers",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/phi.png",
-          "wins": 9,
+          "wins": 10,
           "losses": 3,
           "color": "#1d428a",
           "alt": "#e01234"
@@ -188,7 +188,7 @@
           "short": "Mavericks",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/dal.png",
           "wins": 7,
-          "losses": 4,
+          "losses": 5,
           "color": "#0064b1",
           "alt": "#bbc4ca"
         },
@@ -203,16 +203,6 @@
           "alt": "#9ca0a3"
         },
         {
-          "abbr": "CHA",
-          "name": "Charlotte Hornets",
-          "short": "Hornets",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/cha.png",
-          "wins": 4,
-          "losses": 7,
-          "color": "#008ca8",
-          "alt": "#1d1060"
-        },
-        {
           "abbr": "IND",
           "name": "Indiana Pacers",
           "short": "Pacers",
@@ -221,6 +211,16 @@
           "losses": 8,
           "color": "#0c2340",
           "alt": "#ffd520"
+        },
+        {
+          "abbr": "CHA",
+          "name": "Charlotte Hornets",
+          "short": "Hornets",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/cha.png",
+          "wins": 4,
+          "losses": 8,
+          "color": "#008ca8",
+          "alt": "#1d1060"
         },
         {
           "abbr": "NO",
@@ -236,7 +236,7 @@
     },
     {
       "name": "Pete",
-      "wins": 38,
+      "wins": 40,
       "losses": 37,
       "teams": [
         {
@@ -244,10 +244,20 @@
           "name": "Minnesota Timberwolves",
           "short": "Timberwolves",
           "logo": "https://a.espncdn.com/i/teamlogos/nba/500/min.png",
-          "wins": 8,
+          "wins": 9,
           "losses": 3,
           "color": "#266092",
           "alt": "#79bc43"
+        },
+        {
+          "abbr": "DET",
+          "name": "Detroit Pistons",
+          "short": "Pistons",
+          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/det.png",
+          "wins": 8,
+          "losses": 3,
+          "color": "#1d428a",
+          "alt": "#c8102e"
         },
         {
           "abbr": "POR",
@@ -258,16 +268,6 @@
           "losses": 3,
           "color": "#e03a3e",
           "alt": "#000000"
-        },
-        {
-          "abbr": "DET",
-          "name": "Detroit Pistons",
-          "short": "Pistons",
-          "logo": "https://a.espncdn.com/i/teamlogos/nba/500/det.png",
-          "wins": 7,
-          "losses": 3,
-          "color": "#1d428a",
-          "alt": "#c8102e"
         },
         {
           "abbr": "NY",
