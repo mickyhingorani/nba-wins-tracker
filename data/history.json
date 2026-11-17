@@ -188,6 +188,13 @@
       "Ryall": 2,
       "Pete": 2,
       "Unpicked": 0
+    },
+    "2026-11-16": {
+      "Pablo": 3,
+      "Micky": 3,
+      "Ryall": 0,
+      "Pete": 2,
+      "Unpicked": 0
     }
   },
   "players": [
@@ -633,6 +640,16 @@
       "Ryall|Pete": [
         0,
         1
+      ]
+    },
+    "2026-11-16": {
+      "Micky|Ryall": [
+        3,
+        0
+      ],
+      "Pablo|Ryall": [
+        1,
+        0
       ]
     }
   }
