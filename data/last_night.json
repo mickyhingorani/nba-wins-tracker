@@ -1,143 +1,293 @@
 {
-  "date": "2026-11-19",
-  "updated": "2026-11-20T18:47:54+00:00",
+  "date": "2026-11-20",
+  "updated": "2026-11-21T09:40:14+00:00",
   "games": [
     {
-      "start": "2026-11-20T01:00Z",
+      "start": "2026-11-21T00:00Z",
       "final": true,
       "state": "post",
       "status": "Final",
       "away": {
-        "abbr": "GS",
-        "name": "Golden State Warriors",
-        "short": "Warriors",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/gs.png",
-        "score": 98,
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "short": "Hornets",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/cha.png",
+        "score": 97,
         "winner": false,
-        "record": "8-8",
-        "owner": "Ryall",
-        "color": "#fdb927",
-        "alt": "#1d428a"
+        "record": "4-11",
+        "owner": "Micky",
+        "color": "#008ca8",
+        "alt": "#1d1060"
       },
       "home": {
-        "abbr": "MEM",
-        "name": "Memphis Grizzlies",
-        "short": "Grizzlies",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mem.png",
-        "score": 126,
+        "abbr": "ATL",
+        "name": "Atlanta Hawks",
+        "short": "Hawks",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/atl.png",
+        "score": 111,
         "winner": true,
-        "record": "12-4",
+        "record": "10-6",
         "owner": "Pablo",
-        "color": "#5d76a9",
-        "alt": "#12173f"
+        "color": "#c8102e",
+        "alt": "#fdb927"
       }
     },
     {
-      "start": "2026-11-20T01:00Z",
+      "start": "2026-11-21T00:30Z",
       "final": true,
       "state": "post",
       "status": "Final",
       "away": {
-        "abbr": "POR",
-        "name": "Portland Trail Blazers",
-        "short": "Trail Blazers",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/por.png",
-        "score": 124,
+        "abbr": "ORL",
+        "name": "Orlando Magic",
+        "short": "Magic",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/orl.png",
+        "score": 113,
         "winner": true,
-        "record": "10-5",
+        "record": "7-8",
+        "owner": "Micky",
+        "color": "#0150b5",
+        "alt": "#9ca0a3"
+      },
+      "home": {
+        "abbr": "BKN",
+        "name": "Brooklyn Nets",
+        "short": "Nets",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/bkn.png",
+        "score": 111,
+        "winner": false,
+        "record": "3-12",
+        "owner": "Ryall",
+        "color": "#000000",
+        "alt": "#ffffff"
+      }
+    },
+    {
+      "start": "2026-11-21T00:30Z",
+      "final": true,
+      "state": "post",
+      "status": "Final",
+      "away": {
+        "abbr": "IND",
+        "name": "Indiana Pacers",
+        "short": "Pacers",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/ind.png",
+        "score": 119,
+        "winner": false,
+        "record": "5-11",
+        "owner": "Micky",
+        "color": "#0c2340",
+        "alt": "#ffd520"
+      },
+      "home": {
+        "abbr": "CLE",
+        "name": "Cleveland Cavaliers",
+        "short": "Cavaliers",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/cle.png",
+        "score": 128,
+        "winner": true,
+        "record": "9-8",
         "owner": "Pete",
-        "color": "#e03a3e",
+        "color": "#860038",
+        "alt": "#bc945c"
+      }
+    },
+    {
+      "start": "2026-11-21T00:30Z",
+      "final": true,
+      "state": "post",
+      "status": "Final",
+      "away": {
+        "abbr": "TOR",
+        "name": "Toronto Raptors",
+        "short": "Raptors",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/tor.png",
+        "score": 105,
+        "winner": true,
+        "record": "6-10",
+        "owner": "Ryall",
+        "color": "#d91244",
         "alt": "#000000"
       },
       "home": {
-        "abbr": "MIL",
-        "name": "Milwaukee Bucks",
-        "short": "Bucks",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mil.png",
-        "score": 114,
-        "winner": false,
-        "record": "1-15",
-        "owner": "Unpicked",
-        "color": "#00471b",
-        "alt": "#eee1c6"
-      }
-    },
-    {
-      "start": "2026-11-20T01:00Z",
-      "final": true,
-      "state": "post",
-      "status": "Final",
-      "away": {
-        "abbr": "NY",
-        "name": "New York Knicks",
-        "short": "Knicks",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/ny.png",
+        "abbr": "DET",
+        "name": "Detroit Pistons",
+        "short": "Pistons",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/det.png",
         "score": 102,
-        "winner": true,
-        "record": "9-6",
+        "winner": false,
+        "record": "10-5",
         "owner": "Pete",
         "color": "#1d428a",
-        "alt": "#f58426"
-      },
-      "home": {
-        "abbr": "MIN",
-        "name": "Minnesota Timberwolves",
-        "short": "Timberwolves",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/min.png",
-        "score": 99,
-        "winner": false,
-        "record": "11-5",
-        "owner": "Pete",
-        "color": "#266092",
-        "alt": "#79bc43"
+        "alt": "#c8102e"
       }
     },
     {
-      "start": "2026-11-20T01:00Z",
+      "start": "2026-11-21T01:00Z",
       "final": true,
       "state": "post",
       "status": "Final",
       "away": {
-        "abbr": "LAC",
-        "name": "LA Clippers",
-        "short": "Clippers",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lac.png",
-        "score": 112,
-        "winner": false,
-        "record": "4-10",
-        "owner": "Pete",
-        "color": "#12173f",
-        "alt": "#c8102e"
+        "abbr": "WSH",
+        "name": "Washington Wizards",
+        "short": "Wizards",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/wsh.png",
+        "score": 98,
+        "winner": true,
+        "record": "6-11",
+        "owner": "Pablo",
+        "color": "#e31837",
+        "alt": "#002b5c"
       },
       "home": {
-        "abbr": "SA",
-        "name": "San Antonio Spurs",
-        "short": "Spurs",
-        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/sa.png",
-        "score": 124,
-        "winner": true,
-        "record": "13-3",
+        "abbr": "CHI",
+        "name": "Chicago Bulls",
+        "short": "Bulls",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/chi.png",
+        "score": 94,
+        "winner": false,
+        "record": "4-11",
+        "owner": "Pete",
+        "color": "#ce1141",
+        "alt": "#000000"
+      }
+    },
+    {
+      "start": "2026-11-21T01:00Z",
+      "final": true,
+      "state": "post",
+      "status": "Final",
+      "away": {
+        "abbr": "NO",
+        "name": "New Orleans Pelicans",
+        "short": "Pelicans",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/no.png",
+        "score": 120,
+        "winner": false,
+        "record": "5-12",
         "owner": "Micky",
-        "color": "#000000",
-        "alt": "#c4ced4"
+        "color": "#0a2240",
+        "alt": "#b4975a"
+      },
+      "home": {
+        "abbr": "OKC",
+        "name": "Oklahoma City Thunder",
+        "short": "Thunder",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/okc.png",
+        "score": 126,
+        "winner": true,
+        "record": "10-6",
+        "owner": "Pablo",
+        "color": "#007ac1",
+        "alt": "#ef3b24"
+      }
+    },
+    {
+      "start": "2026-11-21T02:30Z",
+      "final": true,
+      "state": "post",
+      "status": "Final",
+      "away": {
+        "abbr": "PHX",
+        "name": "Phoenix Suns",
+        "short": "Suns",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/phx.png",
+        "score": 111,
+        "winner": true,
+        "record": "8-7",
+        "owner": "Pablo",
+        "color": "#29127a",
+        "alt": "#e56020"
+      },
+      "home": {
+        "abbr": "UTAH",
+        "name": "Utah Jazz",
+        "short": "Jazz",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/utah.png",
+        "score": 101,
+        "winner": false,
+        "record": "3-14",
+        "owner": "Ryall",
+        "color": "#4e008e",
+        "alt": "#79a3dc"
+      }
+    },
+    {
+      "start": "2026-11-21T03:00Z",
+      "final": true,
+      "state": "post",
+      "status": "Final",
+      "away": {
+        "abbr": "HOU",
+        "name": "Houston Rockets",
+        "short": "Rockets",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/hou.png",
+        "score": 124,
+        "winner": false,
+        "record": "12-5",
+        "owner": "Pablo",
+        "color": "#ce0e2d",
+        "alt": "#000000"
+      },
+      "home": {
+        "abbr": "DEN",
+        "name": "Denver Nuggets",
+        "short": "Nuggets",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/den.png",
+        "score": 133,
+        "winner": true,
+        "record": "9-5",
+        "owner": "Ryall",
+        "color": "#0e2240",
+        "alt": "#fec524"
+      }
+    },
+    {
+      "start": "2026-11-21T03:00Z",
+      "final": true,
+      "state": "post",
+      "status": "Final",
+      "away": {
+        "abbr": "SAC",
+        "name": "Sacramento Kings",
+        "short": "Kings",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/sac.png",
+        "score": 104,
+        "winner": false,
+        "record": "1-14",
+        "owner": "Unpicked",
+        "color": "#5a2d81",
+        "alt": "#6a7a82"
+      },
+      "home": {
+        "abbr": "LAL",
+        "name": "Los Angeles Lakers",
+        "short": "Lakers",
+        "logo": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lal.png",
+        "score": 106,
+        "winner": true,
+        "record": "14-3",
+        "owner": "Ryall",
+        "color": "#552583",
+        "alt": "#fdb927"
       }
     }
   ],
   "haul": {
     "Pablo": {
-      "wins": 1,
-      "losses": 0
+      "wins": 4,
+      "losses": 1
     },
     "Micky": {
       "wins": 1,
-      "losses": 0
+      "losses": 3
     },
     "Ryall": {
-      "wins": 0,
-      "losses": 1
+      "wins": 3,
+      "losses": 2
     },
     "Pete": {
-      "wins": 2,
+      "wins": 1,
       "losses": 2
     },
     "Unpicked": {
